@@ -1,24 +1,24 @@
-extract_metadata_raw <- function(path = getwd(), csv = TRUE, n_ch1 = 1, n_ch2 = 16, create_flag = FALSE, interactive = FALSE){
-  #require(tidyverse)
-  #library(platetools)
-  file <- tibble(file_name = list.files(path = path, full.names = FALSE),
-                 file_path = list.files(path = path, full.names = TRUE)) %>%
-    #I keep only tiff files
-    mutate(is_image = grepl(pattern = ".tiff", x = file_name)) %>% filter(is_image == TRUE) %>%
-    #I start formatting files
-    separate(file_name, c("file_name", "type"), sep = "\\.") %>% separate(file_name, c("location", "channel"), remove = FALSE, sep = "-") %>%
-    #I separate the file name variable twice, as I want to convert one batch to numerics
-    separate(location, c("row", "col", "fld", "zst"), sep = c(3, 6, 9), remove= FALSE) %>%
-    separate(location, c("n_row", "n_col", "n_fld", "n_zst"), sep = c(3, 6, 9)) %>%
-    mutate_at(vars(row:zst), funs(substr(., 2,3))) %>% mutate_at(vars(n_row:n_zst), funs(substr(., 2,3))) %>%
-    mutate_at(vars(n_row:n_zst), funs(as.numeric)) %>%
-    #I create a well letter
-    mutate(l_row = LETTERS[n_row]) %>%
-    #I create a well variable
-    unite(well, l_row, col, remove = FALSE, sep ="") %>%
-    mutate(channel = substr(channel, 1, 3)) %>%
-    mutate(parent = path %>% str_split(pattern = "/") %>% unlist %>% .[length(.)-1]) %>%
-    dplyr::select(file_name, n_zst, well:zst, l_row, channel, file_path, parent)
+#' Create input metadata for flatfield correction in distributed cell profiler
+#'
+#' @param path the path of the directry to screen. The path is not checked recursively.
+#' @param csv should a .csv file with image metadata be created?
+#' @param n_ch1 number of images in channel one (for example digital phase contrast)
+#' @param n_ch2 number of images in channel two (for example brightfield) The function can only handle two channels.
+#' @param create_flag should image files that are part of an incomplete set be renamed?
+#' @param interactive if TRUE: the report will be created in the parent dir of path; if FALSE: the report will be created in the default dir on the ctrl node.
+#' @param bucket_mode if TRUE: all file names have a relative path to the bucket root, if FALSE: all files have their root to the CTRL NODE
+#'
+#' @return No returned object. The function creates the available image sets for completeness, flags incomplete datasets and will write a metadata file.
+#' @export
+#'
+#' @examples
+create_flatfield_metadata <- function(path = getwd(), csv = TRUE,
+                               n_ch1 = 16, n_ch2 = 16,
+                               create_flag = FALSE,
+                               interactive = TRUE,
+                               bucket_mode = TRUE,
+                               brightfield_channel = "ch2"){
+  file <- extract_filelist(path)
 
   file_count <- file %>% group_by(well, fld, channel) %>% count() %>%
     ungroup %>% nest(-well, -fld) %>%
@@ -44,6 +44,9 @@ extract_metadata_raw <- function(path = getwd(), csv = TRUE, n_ch1 = 1, n_ch2 = 
                   Metadata_parent = parent) %>%
     #I keep the original file name
     mutate(Metadata_original = Image_FileName_brightfield) %>%
+    #For stability, I add a letter in front of the field object
+    #CAVE: The script did not introduce this cahnge - start looking for errors here
+    mutate(Metadata_fld = paste0("f", Metadata_fld)) %>%
     #change the path name
     group_by(Image_FileName_brightfield) %>%
     mutate(Image_PathName_brightfield = Image_PathName_brightfield %>%
@@ -51,11 +54,26 @@ extract_metadata_raw <- function(path = getwd(), csv = TRUE, n_ch1 = 1, n_ch2 = 
     #add the file extension back
     ungroup() %>%
     mutate(Image_FileName_brightfield = paste0(Image_FileName_brightfield, ".", ext)) %>%
+    #remove non-brightfield images
+    dplyr::filter(Metadata_channel == brightfield_channel) %>%
     #remove unwanted columns
     dplyr::select(Image_FileName_brightfield, Image_PathName_brightfield,
                   Metadata_fld, Metadata_channel,
                   Metadata_parent,
-                  Metadata_original)
+                  Metadata_original,
+                  Metadata_zst)
+
+  #cropping the first three directories, assuming that the s3 bucket is mounted under:
+  #/home/ubuntu/bucket
+  if(bucket_mode == TRUE){
+    complete_file_cp <- complete_file_cp %>%
+      group_by(Image_FileName_brightfield) %>%
+      mutate(Image_PathName_brightfield = Image_PathName_brightfield %>%
+               str_split(pattern = "/") %>%
+               unlist() %>% .[5:length(.)] %>%
+               str_flatten(collapse = "/")) %>%
+      ungroup()
+  }
 
 
   if((file_count$new %>% min()) == 0){
@@ -74,10 +92,11 @@ extract_metadata_raw <- function(path = getwd(), csv = TRUE, n_ch1 = 1, n_ch2 = 
     }
   }
 
-  print("creating a .csv with metadata")
+
   #CAVE: start messing with WDs
   setwd(path)
   if(interactive == TRUE){setwd("..")}
   if(interactive == FALSE){setwd("~/metadata")}
   write.csv(complete_file_cp, "metadata.csv", row.names=FALSE)
+  print(paste0("creating a .csv with metadata at", getwd()))
 }

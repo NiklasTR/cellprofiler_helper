@@ -1,0 +1,32 @@
+---
+title: "Installing and Updating dcphelper on AWS"
+author: "Niklas Rindtorff"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Installing dcphelper on AWS
+
+1. push all local changes to dcphelper and the rapid project to github
+1. ssh into the EC2 DCP control node on AWS
+1. make sure that the control node has the ascites-biosensor s3 bucket properly mounted under *bucket*
+1. navigate throught the *bucket/* into the s3 and into */rapid*
+1. run *git pull origin*
+1. run *R CMD INSTALL <package-name>.tar.gz*
+
+# Running dcphelper on AWS
+
+1. make sure the latest version of dcphelper is installed
+
+This vignette showe
