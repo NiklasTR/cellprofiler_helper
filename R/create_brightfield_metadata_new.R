@@ -10,7 +10,7 @@
 #' @export
 #'
 #' @examples
-create_brightfield_metadata_new <- function(path = getwd(), ch_number = "ch1",
+create_brightfield_metadata_new <- function(path = getwd(), ch_number,
                                   interactive = TRUE, interactive_path = "~/bucket/metadata", name = "brightfield",
                                   bucket_mode = FALSE){
   file <- extract_filelist(path)

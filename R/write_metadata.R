@@ -27,6 +27,7 @@ write_metadata <- function(df, path, interactive,
 
   parent = df$Metadata_parent %>% unique() %>% .[1]
 
+
     print("creating a .csv with metadata")
     #CAVE: start messing with WDs
     #setwd(path)
