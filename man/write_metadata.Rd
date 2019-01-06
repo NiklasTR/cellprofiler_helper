@@ -5,7 +5,7 @@
 \title{Title}
 \usage{
 write_metadata(df, path, interactive, interactive_path = "~/metadata",
-  name = "pc", bucket_mode)
+  name = "pc")
 }
 \arguments{
 \item{name}{}

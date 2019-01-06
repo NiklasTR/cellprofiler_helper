@@ -1,6 +1,6 @@
 Package: dcphelper
-Title: What the Package Does (one line, title case)
-Version: 0.0.0.9007
+Title: Create metadata and job files for distributed cell profiler 
+Version: 0.9.01.2019
 Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Depends: R (>= 3.4)
@@ -12,7 +12,8 @@ Imports:
   dplyr,
   tidyr,
   stringr,
-  purrr
+  purrr,
+  parallel
 RoxygenNote: 6.1.1
 Suggests: knitr,
     rmarkdown
