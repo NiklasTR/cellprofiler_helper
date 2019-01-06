@@ -1,5 +1,5 @@
 ---
-title: "Installing and Updating dcphelper on AWS"
+title: "Running dcphelper on AWS"
 author: "Niklas Rindtorff"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -27,6 +27,25 @@ knitr::opts_chunk$set(
 
 # Running dcphelper on AWS
 
-1. make sure the latest version of dcphelper is installed
+## Creating metadata for brightfield flatfield correction.
 
-This vignette showe
+1. make sure the latest version of dcphelper is installed
+1. manually navigate to the XY/Image directory you want to process
+1. call the following function. You have to manually specificy the channel number for the images.
+
+Alternatively, you can also specify the path as an argument to the function. Per convention, the path has to have a trailing */* and ends in the directory in which the actual images are located. It is very important to have the trailing */*, as the script uses the path to determine the plate name etc.
+
+```{r, eval = FALSE}
+R -q -e "library(dcphelper); dcphelper::create_flattfield_metadata(ch_number = 'ch2')"
+# Be careful with the "" vs. '' quotes. 
+```
+
+The function runs in mutliple steps.
+
+1. List the content of a directory and store the list. This can take a lot of time, but only needs to be done once. (**Important:** if you update the files in the directory this will not change the filelist automatically. You can overwrite this behvaiour by calling the function with the argument force = TRUE).
+1. Access the filelist and filter the images of interest
+1. Format the metadata table so it can be processed with cellprofiler.
+
+The output of the function is located in *~/metadata* and has the name of the directory in it. You have to manually make a copy of the file and rename it to *metadata_bf.csv* so it gets processed by cellprofiler as of now. This might change in future versions of the pipeline.
+
+

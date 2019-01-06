@@ -9,7 +9,7 @@
 #' @import magrittr
 #'
 #' @examples
-build_filelist <- function(path, force = FALSE){
+build_filelist <- function(path, force){
   # path mus be with trailing backslash
   parent <- path %>% str_split(pattern = "/") %>% unlist %>% .[length(.)-2]
   if(file.exists(paste0("~/metadata/dir_content_", parent ,".txt")) & force == FALSE){

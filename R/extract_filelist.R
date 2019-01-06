@@ -6,8 +6,8 @@
 #'
 #' @examples
 #'
-extract_filelist <- function(path = getwd()){
-   file <- build_filelist(path) %>%
+extract_filelist <- function(path = getwd(), force){
+   file <- build_filelist(path, force) %>%
      # tibble(file_name = list.files(path = path, full.names = FALSE),
      #             file_path = list.files(path = path, full.names = TRUE)) %>%
     #I keep only tiff files
@@ -25,7 +25,7 @@ extract_filelist <- function(path = getwd()){
     unite(well, l_row, col, remove = FALSE, sep ="") %>%
     separate(channel, c("channel", "timepoint", "fkfl"), sep = c(3, 6), remove= FALSE) %>%
     # mutate(channel = substr(channel, 1, 3)) %>% #legacy
-    mutate(parent = path %>% str_split(pattern = "/") %>% unlist %>% .[length(.)-1]) %>%
+    mutate(parent = path %>% str_split(pattern = "/") %>% unlist %>% .[length(.)-2]) %>%
     dplyr::select(file_name, n_zst, well:zst, l_row, channel, file_path, parent, timepoint) %>%
      separate(file_path, c("name", "ext"), sep = "\\.", remove = FALSE)
 

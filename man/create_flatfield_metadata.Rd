@@ -2,30 +2,15 @@
 % Please edit documentation in R/create_flatfield_metadata.R
 \name{create_flatfield_metadata}
 \alias{create_flatfield_metadata}
-\title{Create input metadata for flatfield correction in distributed cell profiler}
+\title{Title}
 \usage{
-create_flatfield_metadata(path = getwd(), csv = TRUE, n_ch1 = 16,
-  n_ch2 = 16, create_flag = FALSE, interactive = TRUE,
-  bucket_mode = TRUE, brightfield_channel = "ch2")
+create_flatfield_metadata(path = paste0(getwd(), "/"), ch_number,
+  force = FALSE, name = "bf", interactive = TRUE,
+  interactive_path = "~/bucket/metadata", bucket_mode = FALSE)
 }
 \arguments{
-\item{path}{the path of the directry to screen. The path is not checked recursively.}
-
-\item{csv}{should a .csv file with image metadata be created?}
-
-\item{n_ch1}{number of images in channel one (for example digital phase contrast)}
-
-\item{n_ch2}{number of images in channel two (for example brightfield) The function can only handle two channels.}
-
-\item{create_flag}{should image files that are part of an incomplete set be renamed?}
-
-\item{interactive}{if TRUE: the report will be created in the parent dir of path; if FALSE: the report will be created in the default dir on the ctrl node.}
-
-\item{bucket_mode}{if TRUE: all file names have a relative path to the bucket root, if FALSE: all files have their root to the CTRL NODE}
-}
-\value{
-No returned object. The function creates the available image sets for completeness, flags incomplete datasets and will write a metadata file.
+\item{name}{}
 }
 \description{
-Create input metadata for flatfield correction in distributed cell profiler
+Title
 }

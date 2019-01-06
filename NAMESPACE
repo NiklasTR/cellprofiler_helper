@@ -2,7 +2,6 @@
 
 export(build_filelist)
 export(check_image_set)
-export(create_brightfield_metadata_new)
 export(create_flatfield_metadata)
 export(create_phase_metadata)
 export(extract_filelist)

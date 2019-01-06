@@ -34,6 +34,7 @@ reformat_filelist <- function(df){
                   Metadata_parent,
                   Metadata_original,
                   Metadata_zst,
-                  Metadata_timepoint) %>%
+                  Metadata_timepoint,
+                  Metadata_well) %>%
     return()
 }

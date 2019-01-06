@@ -4,7 +4,7 @@
 \alias{extract_filelist}
 \title{Return tibble describing each image file with well, field etc. in a given directory}
 \usage{
-extract_filelist(path = getwd())
+extract_filelist(path = getwd(), force)
 }
 \arguments{
 \item{path}{the path of the directry to screen. The path is not checked recursively}

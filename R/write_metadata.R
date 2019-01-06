@@ -12,18 +12,7 @@
 #' @examples
 write_metadata <- function(df, path, interactive,
                            interactive_path = "~/metadata",
-                           name = "pc",
-                           bucket_mode){
-
-  if(bucket_mode == TRUE){
-    df <- df %>%
-      group_by(Image_FileName_brightfield) %>%
-      mutate(Image_PathName_brightfield = Image_PathName_brightfield %>%
-               str_split(pattern = "/") %>%
-               unlist() %>% .[5:length(.)] %>%
-               str_flatten(collapse = "/")) %>%
-      ungroup()
-  }
+                           name = "pc"){
 
   parent = df$Metadata_parent %>% unique() %>% .[1]
 

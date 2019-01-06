@@ -10,13 +10,14 @@
 #' @export
 #'
 #' @examples
-create_flatfield_metadata <- function(path = paste0(getwd(), "/"),
+create_flatfield_metadata_split <- function(path = paste0(getwd(), "/"),
                                       ch_number,
                                       force = FALSE,
                                       name = "bf",
                                       range = c(1, 16),
                                       interactive = TRUE,
-                                      interactive_path = "~/bucket/metadata"){
+                                      interactive_path = "~/bucket/metadata",
+                                      bucket_mode = FALSE){
   file <- extract_filelist(path, force)
 
   #filtering the channel of interest
@@ -28,5 +29,5 @@ create_flatfield_metadata <- function(path = paste0(getwd(), "/"),
   #I reformat the table
   file_ff <- file_f %>% reformat_filelist()
 
-  write_metadata(file_ff, path = path, interactive = interactive, name = name)
+  write_metadata_split(file_ff, path = path, interactive = interactive, bucket_mode = bucket_mode, name = name)
 }
