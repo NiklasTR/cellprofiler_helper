@@ -18,6 +18,7 @@ create_flatfield_metadata <- function(path = paste0(getwd(), "/"),
                                       interactive = TRUE,
                                       interactive_path = "~/bucket/metadata"){
   file <- extract_filelist(path, force)
+  #TODO: remove deprecated interactive etc. flags
 
   #filtering the channel of interest
   file_f <- file %>%
