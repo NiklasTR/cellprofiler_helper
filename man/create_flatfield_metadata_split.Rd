@@ -4,8 +4,11 @@
 \alias{create_flatfield_metadata_split}
 \title{Title}
 \usage{
-create_flatfield_metadata_split(path = paste0(getwd(), "/"), ch_number,
-  force = FALSE, name = "bf", range = c(1, 16))
+create_flatfield_metadata_split(path = paste0(getwd(), "/"),
+  channel_of_interest, name = "bf", range = c(1, 16),
+  json_path = "~/bucket/metadata/job_flatfield_template.json",
+  path_base = "~/bucket/metadata/", force = FALSE,
+  include_brightfield_proj = FALSE, include_additional_proj = FALSE)
 }
 \arguments{
 \item{name}{}

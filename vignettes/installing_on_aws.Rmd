@@ -36,7 +36,7 @@ knitr::opts_chunk$set(
 Alternatively, you can also specify the path as an argument to the function. Per convention, the path has to have a trailing */* and ends in the directory in which the actual images are located. It is very important to have the trailing */*, as the script uses the path to determine the plate name etc.
 
 ```{r, eval = FALSE}
-R -q -e "library(dcphelper); dcphelper::create_flattfield_metadata(ch_number = 'ch2')"
+R -q -e "library(dcphelper); dcphelper::create_flatfield_metadata(channel = 'ch2')"
 # Be careful with the "" vs. '' quotes. 
 ```
 
@@ -48,4 +48,10 @@ The function runs in mutliple steps.
 
 The output of the function is located in *~/metadata* and has the name of the directory in it. You have to manually make a copy of the file and rename it to *metadata_bf.csv* so it gets processed by cellprofiler as of now. This might change in future versions of the pipeline.
 
+## To-Do explain below: 
+
+```{r, eval = FALSE}
+metadata <- dcphelper::create_flatfield_metadata_split(channel = 'ch2')
+
+```
 

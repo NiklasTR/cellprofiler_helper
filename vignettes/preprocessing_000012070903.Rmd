@@ -1,0 +1,693 @@
+---
+title: "Preprocessing 000012070903"
+author: "Niklas Rindtorff"
+date: "1/22/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(dcphelper)
+```
+
+# Brightfield Flatfield projection
+## Naming target dir 
+
+```{r}
+new_path_base = "/home/ubuntu/bucket/metadata/000012070903_2019-01-10T20_04_27-Measurement_3/"
+new_json_path_flat = "/home/ubuntu/bucket/metadata/job_flatfield_template.json"
+new_json_path_max = "/home/ubuntu/bucket/metadata/job_maxproj_template.json"
+new_json_path_seg = "/home/ubuntu/bucket/metadata/job_segmentation_template.json"
+```
+
+## Creating target dir 
+
+```{r}
+dir.create(new_path_base) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
+```
+
+## Name channels
+
+```{r}
+channel_v <- c("ch2", "ch3", "ch4")
+channel_n <- c("bf", "ce", "tm")
+```
+
+
+## Defining metadata
+
+```{r, eval = TRUE}
+for(i in 1:length(channel_n)){
+metadata_split_path <- create_flatfield_metadata_split(
+  path = "/home/ubuntu/bucket/inbox/000012070903_2019-01-10T20_04_27-Measurement_3/Images/",
+  channel_of_interest = channel_v[i], #brightfield
+  name = channel_n[i],
+  json_path = new_json_path, #not needed
+  path_base = new_path_base,
+  force = FALSE)
+}
+```
+
+
+## Grouping metadata
+
+```{python, eval = TRUE}
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012070903_2019-01-10T20_04_27-Measurement_3/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "bf"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py ~/bucket/metadata/000012070903_2019-01-10T20_04_27-Measurement_3/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "ce"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py ~/bucket/metadata/000012070903_2019-01-10T20_04_27-Measurement_3/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "tm"
+```
+
+## Writing job files
+
+```{r}
+link_json_metadata(metadata_split_path = list.files(new_path_base, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = "bf"), 
+                   json_path = new_json_path_flat, 
+                   path_base = new_path_base)
+
+channel_n_mod <- channel_n[2:3]
+
+for(i in 1:length(channel_n_mod)){
+link_json_metadata(metadata_split_path = list.files(new_path_base, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = channel_n_mod[i]), 
+                   json_path = new_json_path_max, 
+                   path_base = new_path_base)
+}
+```
+
+## Grouping job files and creating an executable
+
+```{r, eval = FALSE}
+for(i in 1:length(channel_n)){
+group_jobs_bash(path_base = new_path_base,
+                name = channel_n[i],
+                letter_row_interval = c(1:3),
+                number_col_interval = c(1:24))
+}
+```
+
+## Running jobs
+
+## Renaming files 
+
+I test the renaming first by removing a dummy directory of fake files. 
+
+```{r, eval = FALSE}
+pip install --user pypng
+pip install --user imageio
+python preprocess.py /home/ubuntu/bucket/flatfield/703__2018-11-07T20_55_16-Measurement_1/ "DPC" "BRIGHTFIELD" "CE" "TMRM"
+```
+
+I am hitting errors when the code encounters files that have already been renamed.
+I open a ticket.
+
+Now I process files:
+
+```{r, eval = FALSE}
+python preprocess.py /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/ "DPC" "BRIGHTFIELD" "CE" "TMRM"
+```
+
+I encounter an error when processing files that are not BRIGHTFIELD. The code has not yet been adapted. I fix the code by including a search pattern and only running it on clean repos. I need to fix this directly. 
+
+To keep the machine busy, I run the following lines, changing the patterns.
+
+```{r, eval = FALSE}
+python preprocess.py /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/ "DPC" "BRIGHTFIELD" "CE" "TMRM" "f02-ch2"
+```
+
+For the other projects, I want to find a way to rename them. 
+It might be best to create a new module that renames maxprojections. After developing this module, I renamed all files. 
+
+Now I move all files to the *isl* directory in the bucket.
+
+```{r, eval = FALSE}
+mv -v /home/ubuntu/bucket/flatfield/000*/000*/*.png /home/ubuntu/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+```
+
+This works, hopefully
+
+```{r, eval = FALSE}
+source ./venv/bin/activate
+cd in-silico-labeling/
+
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile
+export DATA_DIRECTORY=~/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode TRAIN \
+  --metric LOSS \
+  --restore_directory  $(pwd)/checkpoints \
+  --master "" \
+   --read_pngs \
+  --dataset_train_directory $DATA_DIRECTORY
+
+```
+
+The machine can not read files recursively. I think about changing the source code to make my life easier. 
+For now, I will move files using the shell. 
+
+I interrrupt the training and ran the model inference at step 4349. 
+
+```{r, eval = FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm
+export DATA_DIRECTORY=~/bucket/evaluation_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode EVAL_EVAL \
+  --metric INFER_FULL \
+  --stitch_crop_size 1500 \
+  --restore_directory $BASE_DIRECTORY/train \
+  --read_pngs \
+  --dataset_eval_directory $DATA_DIRECTORY \
+  --infer_channel_whitelist DAPI_CONFOCAL,TUJ1_WIDEFIELD,MAP2_CONFOCAL
+  --noinfer_simplify_error_panels
+```
+
+After inference, I re-start the training on the whole dataset 
+
+```{r, eval = FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm
+export DATA_DIRECTORY=~/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode TRAIN \
+  --metric LOSS \
+  --restore_directory  $BASE_DIRECTORY/train \
+  --master "" \
+   --read_pngs \
+  --dataset_train_directory $DATA_DIRECTORY
+```
+
+We can still see suboptimal results in the training. I believe the pre-processing of ground-truth images is still not good enough yet. 
+
+After meeting with James and Juan, I come to the following conclusion - I perfom a percentile based crop on the upper bound and a mode based crop on the lower bound. This way, I set a lot of background to 0, while preserving most of the dynamic range of my foreground. 
+
+I simulate this process with the matrix below
+
+```{r}
+input <- matrix(rbeta(10000, shape1 = 2, shape2 = 10000), ncol = 100)
+
+hist(input)
+
+
+
+getmode <- function(v) {
+   uniqv <- unique(v)
+   uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+max <- quantile(input, 0.9999)
+min <- getmode(input)
+median <- median(input)
+
+output <- (input - min)/max
+output <- if_else(output > 1, 1, output)
+output <- if_else(output < 0, 0, output)
+
+hist(output)
+min(output)
+```
+
+After implementing code, and running it, I remove selected imags that were generated during previous iterations. 
+
+```{r, eval = FALSE}
+rm /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A??-f02-ch3/lab-CCLF,condition-000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A??-f02-ch3,acquisition_date,year-2019,month-1,day-29,minute-29,well-A??,tile_computation-02,depth_computation-MAXPROJECT,channel-MAP2_CONFOCAL,is_mask-false.png
+
+rm /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A01-f??-ch3/*.png
+
+rm /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A02-f??-ch3/lab-CCLF,condition-000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A02-f??-ch3,acquisition_date,year-2019,month-1,day-29,minute-29,well-A02,tile_computation-??,depth_computation-MAXPROJECT,channel-MAP2_CONFOCAL,is_mask-false.png
+
+```
+
+After setting everything back up I start training the model. As in the beginning, I start from scratch. 
+
+```{r, eval = FALSE}
+mv -v /home/ubuntu/bucket/flatfield/000*/000*/*.png /home/ubuntu/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+
+source ./venv/bin/activate
+cd in-silico-labeling/
+
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile
+export DATA_DIRECTORY=~/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode TRAIN \
+  --metric LOSS \
+  --restore_directory  $(pwd)/checkpoints \
+  --master "" \
+   --read_pngs \
+  --dataset_train_directory $DATA_DIRECTORY
+
+```
+
+After running the training for 4771 episodes, I predict labels based on a training example. 
+
+First, I need to update the ground truth data.
+
+```{r, eval = FALSE}
+mv -v /home/ubuntu/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/lab-CCLF,condition-000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A01-f01-* /home/ubuntu/bucket/evaluation_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+```
+
+No I run inference
+
+```{r, eval = FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile
+export DATA_DIRECTORY=~/bucket/evaluation_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode EVAL_EVAL \
+  --metric INFER_FULL \
+  --stitch_crop_size 1500 \
+  --restore_directory $BASE_DIRECTORY/train \
+  --read_pngs \
+  --dataset_eval_directory $DATA_DIRECTORY \
+  --infer_channel_whitelist TUJ1_WIDEFIELD,MAP2_CONFOCAL
+  --noinfer_simplify_error_panels
+```
+
+This is our result after training ![Prediction after 99.99% quantile scaling](~/bucket/model/isl_cpu_ce_tmrm_quantile/eval_eval_infer/00004769/input_error_panel.png)
+
+I think setting the maximum value to the 99.99% was too agressive. It expanded the dynamic range over sparse intensity values. The new configuration crops the maximum intensity value at 99%. With this change, the intensity in the high dynamic range values is not conserved. Empirically, I decide to work with the 99% normlaization. The intensity distribution is similar to the distribution in the Google paper, with the exception of a trimmed lower bounds. It could be that I have to change them as well after a further round of evaluation. 
+
+I remove all my developmental examples. 
+
+```{r, eval = FALSE}
+rm /home/ubuntu/bucket/flatfield/0000*/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A??-f01-ch3/*.png
+```
+
+```{r,  eval = FALSE}
+mv -v /home/ubuntu/bucket/flatfield/000*/000*/*.png /home/ubuntu/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+
+tmux new -s train
+source ./venv/bin/activate
+cd in-silico-labeling/
+
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile
+export DATA_DIRECTORY=~/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode TRAIN \
+  --metric LOSS \
+  --restore_directory  $(pwd)/checkpoints \
+  --master "" \
+   --read_pngs \
+  --dataset_train_directory $DATA_DIRECTORY
+```
+
+While the network is currently training, I am preprocessing the complete rest of the images in Measurment 3. I start up a CTRL node and create an executable that covers the entire plate.
+
+First I have to finish the first row, by calling a small script.
+
+```{r, eval = FALSE}
+for(i in 1:length(channel_n)){
+group_jobs_bash(path_base = new_path_base,
+                name = channel_n[i],
+                letter_row_interval = c(1),
+                number_col_interval = c(10:24))
+}
+
+for(i in 1:length(channel_n)){
+group_jobs_bash(path_base = new_path_base,
+                name = channel_n[i],
+                letter_row_interval = c(2:16),
+                number_col_interval = c(1:24))
+}
+```
+
+After running the pre-processing, I decided to go and start training the model again - this time with the 99% scaling. The model trained for 3 days. 
+
+This was the call:
+
+```{r, eval =  FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile_99
+export DATA_DIRECTORY=~/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode TRAIN \
+  --metric LOSS \
+  --restore_directory  $(pwd)/checkpoints \
+  --master "" \
+   --read_pngs \
+  --dataset_train_directory $DATA_DIRECTORY
+```
+
+Now I run inference on my test images. I first make sure, that they are updated. 
+
+```{r, eval = FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile_99
+export DATA_DIRECTORY=~/bucket/evaluation_data/000012070903_2019-01-10T20_04_27-Measurement_3/quantile_99
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode EVAL_EVAL \
+  --metric INFER_FULL \
+  --stitch_crop_size 1500 \
+  --restore_directory $BASE_DIRECTORY/train \
+  --read_pngs \
+  --dataset_eval_directory $DATA_DIRECTORY \
+  --infer_channel_whitelist TUJ1_WIDEFIELD,MAP2_CONFOCAL
+  --noinfer_simplify_error_panels
+```
+
+Running inference. These are the results. I must have messed up copying the upadted files into the eval directory. fixing it now. 
+
+![Results of missasigned evaluation]("~/GitHub/")
+
+
+## Renaming all residual files
+
+I am renaming and 99% scaling all files now. I will run the following command. 
+
+```{r, eval = FALSE}
+python /home/ubuntu/bucket/isl_preprocess/sample/preprocess.py /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/ "DPC" "BRIGHTFIELD" "CE" "TMRM" "Measurement"
+```
+
+After renaming files, I transfer them to the training directory to let the network start training on a large image dataset. I perform a 90/10 split, in which I keep a full row of images from the training data. In this case, I will only train the network on rows A through M, row N will be saved for evaluation. 
+
+```{r, eval = FALSE}
+mv -v /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/000012070903*/*.png /home/ubuntu/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+```
+
+This transfer did not work. I experimented with rsync and think I found a viable solution. 
+
+```{r, eval = FALSE}
+rsync -av --include=*.png --exclude=* /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/000012070903*/. /home/ubuntu/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/.
+```
+
+
+After trasnferring all files, I move all files from row N to another directory. 
+
+I create a binary segmentation of the DPC. Therefore I am reapeating the background correction + projection on brightfield images. 
+
+```{r}
+group_jobs_bash(path_base = new_path_base,
+                name = channel_n[1],
+                letter_row_interval = c(1,14),
+                number_col_interval = c(1:24))
+```
+
+I now run the DCP pipeline again.
+
+After running the pipeline, I build a metadata file that can handle the DPC/brightfield dual input. 
+
+```{r}
+metadata_split_path <- create_flatfield_metadata_split(
+  path = "/home/ubuntu/bucket/inbox/000012070903_2019-01-10T20_04_27-Measurement_3/Images/",
+  channel_of_interest = "ch1", #brightfield
+  name = "pc",
+  json_path = new_json_path, #not needed
+  path_base = new_path_base,
+  force = FALSE,
+  include_brightfield_proj = TRUE)
+```
+
+I prepare the grouping of pc metadata 
+
+```{r, eval = FALSE}
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012070903_2019-01-10T20_04_27-Measurement_3/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "pc"
+```
+
+I create a jobfile for the DCP segmentation 
+
+```{r, eval = FALSE}
+
+link_json_metadata(metadata_split_path = list.files(new_path_base, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = "pc"), 
+                   json_path = new_json_path_seg, 
+                   path_base = new_path_base)
+```
+
+```{r}
+group_jobs_bash(path_base = new_path_base,
+                name = "pc",
+                letter_row_interval = c(1),
+                number_col_interval = c(1:24))
+```
+
+After starting the cluster I receive the following error: 
+
+*INFO:__main__:IOError: Test for access to directory failed. Directory: /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A02-f04-ch1*
+
+I take a look at the metadata file for the given image. 
+
+```{r}
+
+```
+
+I finished copying the pngs into the train directory for this unperturbed plate.
+
+I transfer images from row N to a separate evaluation directory. They won't be used for training. 
+
+```{r, eval = FALSE}
+mv preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/lab-CCLF,condition-000012070903_2019-01-10T20_04_27-Measurement_3-sk1-N*.png evaluation_data/000012070903_2019-01-10T20_04_27-Measurement_3/test_quantile_99/
+```
+
+I let the model train on the large dataset. 
+
+```{r, eval = FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate
+export DATA_DIRECTORY=~/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode TRAIN \
+  --metric LOSS \
+  --restore_directory  $(pwd)/checkpoints \
+  --master "" \
+   --read_pngs \
+  --dataset_train_directory $DATA_DIRECTORY
+```
+
+The segmentation of *903 using DPC ist hypersegmented in many images. I try to leverage the segmentation of other images for comparisson.
+
+```{r}
+metadata_split_path <- create_flatfield_metadata_split(
+  path = "/home/ubuntu/bucket/inbox/000012070903_2019-01-10T20_04_27-Measurement_3/Images/",
+  channel_of_interest = "ch1", #brightfield
+  name = "pc",
+  json_path = new_json_path, #not needed
+  path_base = new_path_base,
+  force = FALSE,
+  include_brightfield_proj = TRUE,
+  include_additional_proj = TRUE)
+```
+
+
+For further feature extraction and segmentation, I want to leverage the max intensity projection of the flourescent channels. However, currently, the .tiff images are first renamed and then converted into scaled .pngs. I have to change the order of these two steps. For now, I created a module that can reconstruct the original projection name as defined by CellProfiler. 
+
+I run the script on the *903 directories and rename the .tiff files.
+
+```{r, eval = FALSE}
+python /home/ubuntu/bucket/isl_preprocess/sample/revert.py '/home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3' 'ch3'
+python /home/ubuntu/bucket/isl_preprocess/sample/revert.py '/home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3' 'ch4'
+
+```
+
+In parallel, I started training the network on the whole dataset. I am evalauting the progress by running the following command on a p2 GPU instance. 
+
+```{r, eval = FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate
+export DATA_DIRECTORY=~/bucket/evaluation_data/000012070903_2019-01-10T20_04_27-Measurement_3/validation_quantile_99
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode EVAL_EVAL \
+  --metric INFER_FULL \
+  --stitch_crop_size 1500 \
+  --restore_directory $BASE_DIRECTORY/train \
+  --read_pngs \
+  --dataset_eval_directory $DATA_DIRECTORY \
+  --infer_channel_whitelist TUJ1_WIDEFIELD,MAP2_CONFOCAL
+  --noinfer_simplify_error_panels
+```
+
+Initially, the network evaluated the whole direcotry - this is too much for a simple validation. I use a single field for vlaidation and created a matching directory.
+This is the performance on the holdout test dataset after 3000 steps
+
+It seems as if the ch3 images did not end up in the test/validation data. I am copying them manually. 
+
+```{r, eval = FALSE}
+cp -v ~/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/000012070903_2019-01-10T20_04_27-Measurement_3-sk?-N??-f??-ch3/lab-CCLF,condition-000012070903_2019-01-10T20_04_27-Measurement_3-sk1-N*.png ~/bucket/evaluation_data/000012070903_2019-01-10T20_04_27-Measurement_3/test_quantile_99/
+```
+
+For some reason only every 2nd well in row N was processed. I have to rerun DCP to process the other wells in that row, rename, reformat etc. 
+
+![3318 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate/eval_eval_infer/00003318/target_error_panel.png)
+
+![11153 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate/eval_eval_infer/00011153/target_error_panel.png)
+
+![14310 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate/eval_eval_infer/00014310/target_error_panel.png)
+
+I am reverting the filenames in the N02 directory to create a segmentation mask. 
+
+```{r, eval = FALSE}
+python isl_preprocess/sample/revert.py '/home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3' 'N02'
+```
+
+![20168 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate/eval_eval_infer/00020168/target_error_panel.png)
+
+![23644 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate/eval_eval_infer/00023644/target_error_panel.png)
+
+The training of the network must have been interrupted due to spot request cancellation. I restart the training but use the current checkpoint as a start. 
+I am concerned about feeding the network the same training data for this part of the training. It is hard to find out what images the network has already been trained on, or if there is some kind of random sampling. 
+
+
+```{r, eval = FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2
+export DATA_DIRECTORY=~/bucket/preprocessed_data/000012070903_2019-01-10T20_04_27-Measurement_3/
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode TRAIN \
+  --metric LOSS \
+  --restore_directory ~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate/train \
+  --master "" \
+   --read_pngs \
+  --dataset_train_directory $DATA_DIRECTORY
+```
+
+For evaluation I run 
+
+```{r, eval = FALSE}
+export BASE_DIRECTORY=~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2
+export DATA_DIRECTORY=~/bucket/evaluation_data/000012070903_2019-01-10T20_04_27-Measurement_3/validation_quantile_99
+bazel run isl:launch -- \
+  --alsologtostderr \
+  --base_directory $BASE_DIRECTORY \
+  --mode EVAL_EVAL \
+  --metric INFER_FULL \
+  --stitch_crop_size 1500 \
+  --restore_directory $BASE_DIRECTORY/train \
+  --read_pngs \
+  --dataset_eval_directory $DATA_DIRECTORY \
+  --infer_channel_whitelist TUJ1_WIDEFIELD,MAP2_CONFOCAL
+  --noinfer_simplify_error_panels
+```
+
+
+![30625 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2/eval_eval_infer/00006981/target_error_panel.png)
+
+
+![37901 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2/eval_eval_infer/00014257/target_error_panel.png)
+
+
+00017742
+
+![41386 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2/eval_eval_infer/00017742/target_error_panel.png)
+
+I rename a set of files that were renamed the wrong way.
+
+```{r, eval = FALSE}
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f02-ch3/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f02_ch3_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f02-ch3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f02-ch3-maxproject.tiff
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f03-ch3/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f03_ch3_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f03-ch3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f03-ch3-maxproject.tiff
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f04-ch3/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f04_ch3_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f04-ch3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f04-ch3-maxproject.tiff
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f05-ch3/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f05_ch3_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f05-ch3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f05-ch3-maxproject.tiff
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f06-ch3/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f06_ch3_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f06-ch3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f06-ch3-maxproject.tiff
+
+
+# and channel 4
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f02-ch4/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f02_ch4_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f02-ch4/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f02-ch4-maxproject.tiff
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f03-ch4/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f03_ch4_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f03-ch4/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f03-ch4-maxproject.tiff
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f04-ch4/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f04_ch4_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f04-ch4/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f04-ch4-maxproject.tiff
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f05-ch4/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f05_ch4_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f05-ch4/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f05-ch4-maxproject.tiff
+
+mv 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f06-ch4/000012070903_2019-01-10T20_04_27-Measurement_3_sk1_A10_f06_ch4_maxproject.tiff 000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f06-ch4/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-A10-f06-ch4-maxproject.tiff
+```
+
+After finishing the DPC segmentation without relying on flourescent dye channels, I scale up the segmentation. 
+
+```{r}
+new_json_path_seg = "/home/ubuntu/bucket/metadata/job_segmentation_template.json"
+
+link_json_metadata(metadata_split_path = list.files(new_path_base, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = "pc"), 
+                   json_path = new_json_path_seg, 
+                   path_base = new_path_base)
+```
+
+```{r}
+group_jobs_bash(path_base = new_path_base,
+                name = "pc",
+                letter_row_interval = c(1:16),
+                number_col_interval = c(1:24))
+```
+
+After running these scripts I have to build a solution to access the extracted feature data.
+
+
+![46766 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2/eval_eval_infer/00023122/target_error_panel.png)
+
+I forgot to rename my ch4 projections. Doing it now. 
+
+```{r, eval = FALSE}
+python isl_preprocess/sample/revert.py '/home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3' 'ch4'
+```
+
+
+```{r}
+library(here)
+library(umap)
+library(patchwork)
+
+#df <- readRDS("~/bucket/dropbox/tmp.Rds")
+
+df <- readRDS("~/bucket/dropbox/tmp.Rds") %>%
+  select(-contains("Number"),
+         -contains("Location"),
+         -contains("AreaShape_Center")) %>%
+  janitor::clean_names()
+
+map <- df %>% dplyr::select(-id) %>% umap()
+
+p3 <- map$layout %>% as.tibble() %>% cbind(df) %>% ggplot(aes(V1, V2)) +
+  geom_point(aes(size = area_shape_area,
+                 color = intensity_max_intensity_ch3)) +
+  theme_classic() +
+  scale_color_viridis_c() +
+  theme(legend.position = "none") +
+  labs(x = "UMAP 1",
+       y = "UMAP 2",
+       title = "Cell Event Intensity")
+
+p4 <- map$layout %>% as.tibble() %>% cbind(df) %>% ggplot(aes(V1, V2)) +
+  geom_point(aes(size = area_shape_area,
+                 color = intensity_max_intensity_ch4)) +
+  theme_classic() +
+  scale_color_viridis_c() +
+  theme(legend.position = "none") +
+  labs(x = "UMAP 1",
+       y = "UMAP 2",
+       title = "TMRM Intensity")
+
+p3 + p4
+```
+
+
+
+
+![55864 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2/eval_eval_infer/00032220/target_error_panel.png)

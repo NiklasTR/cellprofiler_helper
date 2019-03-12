@@ -1,0 +1,115 @@
+---
+title: "0000 1207 7803"
+author: "Niklas Rindtorff"
+date: "2/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction 
+
+This plate contains the same samples as 0000 1204 9003 (1047T) but was in addition stained with Hoechst dye 12h after seeding in 384 well plates. The cell were stained and imaged 30 minutes afterwards. More information can be found on the Tracer sheet. 
+
+The plate was imaged using an additional DAPI channel. The DAPI channel has the number: 
+
+ch1 = DPC
+ch2 = BF
+ch3 = Hoechst
+ch4 = CE
+ch5 = TMRM
+
+
+```{r}
+library(tidyverse)
+library(dcphelper)
+```
+
+# Brightfield Flatfield projection
+## Naming target dir 
+
+```{r}
+new_path_base = "/home/ubuntu/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2/"
+new_json_path_flat = "/home/ubuntu/bucket/metadata/job_flatfield_template.json"
+new_json_path_max = "/home/ubuntu/bucket/metadata/job_maxproj_template.json"
+```
+
+## Creating target dir 
+
+```{r}
+dir.create(new_path_base) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
+```
+
+## Name channels
+
+```{r}
+channel_v <- c("ch2", "ch3", "ch4", "ch5")
+channel_n <- c("bf", "dp", "ce", "tm")
+#channel_v <- c("ch1")
+#channel_n <- c("pc")
+```
+
+
+## Defining metadata
+
+```{r, eval = TRUE}
+for(i in 1:length(channel_n)){
+metadata_split_path <- create_flatfield_metadata_split(
+  path = "/home/ubuntu/bucket/inbox/000012077803__2019-01-29T12_50_08-Measurement_2/Images/",
+  channel_of_interest = channel_v[i], #brightfield
+  name = channel_n[i],
+  json_path = new_json_path, #not needed
+  path_base = new_path_base,
+  force = FALSE)
+}
+```
+
+
+## Grouping metadata
+
+```{python, eval = TRUE}
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "bf"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py ~/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "ce"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py ~/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "tm"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py ~/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "dp"
+```
+
+## Writing job files
+
+```{r}
+link_json_metadata(metadata_split_path = list.files(new_path_base, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = "bf"), 
+                   json_path = new_json_path_flat, 
+                   path_base = new_path_base)
+
+channel_n_mod <- channel_n[2:4]
+
+for(i in 1:length(channel_n_mod)){
+link_json_metadata(metadata_split_path = list.files(new_path_base, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = channel_n_mod[i]), 
+                   json_path = new_json_path_max, 
+                   path_base = new_path_base)
+}
+```
+
+## Grouping job files and creating an executable
+
+```{r, eval = FALSE}
+for(i in 1:length(channel_n)){
+group_jobs_bash(path_base = new_path_base,
+                name = channel_n[i],
+                letter_row_interval = c(1:16),
+                number_col_interval = c(1:24))
+}
+```
+
+## Running jobs
+
+Something went wrong when running jobs - I think it is related to the metadata files/ DAPI images. 

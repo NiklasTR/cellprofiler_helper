@@ -6,8 +6,7 @@
 #' @param interactive_path
 #' @param name
 #'
-#' @return
-#' @export
+#' @return()
 #'
 #' @examples
 create_flatfield_metadata <- function(path = paste0(getwd(), "/"),

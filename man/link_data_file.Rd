@@ -2,13 +2,13 @@
 % Please edit documentation in R/link_data_file.R
 \name{link_data_file}
 \alias{link_data_file}
-\title{Link metadata path into JSON job object}
+\title{Fill a JSON template with a specific metadata path and metadata groupings}
 \usage{
-link_data_file(metadata_split_path, json_template)
+link_data_file(metadata_split_path, json_template, json_path, path_base)
 }
 \arguments{
 \item{name}{}
 }
 \description{
-Link metadata path into JSON job object
+Fill a JSON template with a specific metadata path and metadata groupings
 }
