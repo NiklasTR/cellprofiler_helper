@@ -11,6 +11,9 @@ create_flatfield_metadata(path = paste0(getwd(), "/"), ch_number,
 \arguments{
 \item{name}{}
 }
+\value{
+()
+}
 \description{
 Title
 }

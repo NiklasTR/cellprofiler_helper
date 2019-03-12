@@ -1,0 +1,48 @@
+---
+title: "Developing DPC pipeline"
+author: "Niklas Rindtorff"
+date: "2/4/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+The goal of this pipeline is to take the single digital phase contrast image for each field and use it to segment regions of interest. It is not clear right now how good this will work on the 40x images. 
+
+I will build this pipeline interatively using Desktop cellprofiler. After creating a first build, I run it on a local AMI with installed cellprofiler.
+
+```{r, eval = FALSE}
+cellprofiler -c -r -p /home/ubuntu/bucket/rapid/cellprofiler/pipelines/dig_pc_segment_xy_data_root.cppipe -i /home/ubuntu/bucket/blank -o /home/ubuntu/local_output/000012077803__2019-01-29T12_50_08-Measurement_2-sk1-A01-f01-ch1 -d /home/ubuntu/local_output/000012077803__2019-01-29T12_50_08-Measurement_2-sk1-A01-f01-ch1/cp.is.done --data-file=/home/ubuntu/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2/metadata_000012077803__2019-01-29T12_50_08-Measurement_2_pc_A01.csv -g Metadata_parent=000012077803__2019-01-29T12_50_08-Measurement_2,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_fld=f01,Metadata_channel=ch1 --log-level=10
+```
+
+It turns out the segmentation of DPC images is not sufficient. Now I try to leverage the brightfield data to expand the segmentation. 
+
+```{r, eval = FALSE}
+cellprofiler -c -r -p /home/ubuntu/bucket/rapid/cellprofiler/pipelines/bf_root_tpwell_g135_project.cppipe -i /home/ubuntu/bucket/blank -o /home/ubuntu/local_output/000012077803__2019-01-29T12_50_08-Measurement_2-sk1-D09-f02-ch2 -d /home/ubuntu/local_output/000012077803__2019-01-29T12_50_08-Measurement_2-sk1-D09-f02-ch2/cp.is.done --data-file=/home/ubuntu/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2//metadata_000012077803__2019-01-29T12_50_08-Measurement_2_bf_D09.csv -g Metadata_parent=000012077803__2019-01-29T12_50_08-Measurement_2,Metadata_timepoint=sk1,Metadata_well=D09,Metadata_fld=f02,Metadata_channel=ch2 --log-level=10
+```
+
+I also try a summing projection. This build fails because the sum is greater than 1. I do not insist.
+
+```{r, eval = FALSE}
+cellprofiler -c -r -p /home/ubuntu/bucket/rapid/cellprofiler/pipelines/bf_root_tpwell_g135_project_sum.cppipe -i /home/ubuntu/bucket/blank -o /home/ubuntu/local_output/000012077803__2019-01-29T12_50_08-Measurement_2-sk1-D09-f02-ch2 -d /home/ubuntu/local_output/000012077803__2019-01-29T12_50_08-Measurement_2-sk1-D09-f02-ch2/cp.is.done --data-file=/home/ubuntu/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2//metadata_000012077803__2019-01-29T12_50_08-Measurement_2_bf_D09.csv -g Metadata_parent=000012077803__2019-01-29T12_50_08-Measurement_2,Metadata_timepoint=sk1,Metadata_well=D09,Metadata_fld=f02,Metadata_channel=ch2 --log-level=10
+```
+
+After coming up with a prototype that uses the DPC image and expands it using a brightfield projection, I test it on the cluster. First, I run the brightfield projection on the first row of images.
+
+I run a quick test using local CP 
+
+```{r, eval = FALSE}
+cellprofiler -c -r -p /home/ubuntu/bucket/rapid/cellprofiler/pipelines/bf_root_tpwell_g135_project.cppipe -i /home/ubuntu/bucket/blank -o /home/ubuntu/local_output/000012077803__2019-01-29T12_50_08-Measurement_2-sk1-D09-f02-ch2 -d /home/ubuntu/local_output/000012077803__2019-01-29T12_50_08-Measurement_2-sk1-D09-f02-ch2/cp.is.done --data-file=/home/ubuntu/bucket/metadata/000012077803__2019-01-29T12_50_08-Measurement_2//metadata_000012077803__2019-01-29T12_50_08-Measurement_2_bf_D09.csv -g Metadata_parent=000012077803__2019-01-29T12_50_08-Measurement_2,Metadata_timepoint=sk1,Metadata_well=D09,Metadata_fld=f02,Metadata_channel=ch2 --log-level=10
+```
+
+
+After this pipeline has run sucessfully, I rerun wells in row N and A on plate 000012070903_2019 for segmentation. I accidently did not overwrite the standard .._g135 pipeline. I will do this now.
+
+```{r}
+
+```
+

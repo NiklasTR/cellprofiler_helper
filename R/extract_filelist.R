@@ -6,8 +6,8 @@
 #'
 #' @examples
 #'
-extract_filelist <- function(path = getwd(), force){
-   file <- build_filelist(path, force) %>%
+extract_filelist <- function(path = getwd(), force, path_base){
+   file <- build_filelist(path, force, path_base) %>%
      # tibble(file_name = list.files(path = path, full.names = FALSE),
      #             file_path = list.files(path = path, full.names = TRUE)) %>%
     #I keep only tiff files

@@ -4,7 +4,7 @@
 \alias{build_filelist}
 \title{Title}
 \usage{
-build_filelist(path, force)
+build_filelist(path, force, path_base)
 }
 \arguments{
 \item{path}{}

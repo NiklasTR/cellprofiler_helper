@@ -4,8 +4,7 @@
 \alias{link_json_metadata}
 \title{Linking JSON job file to metadata object}
 \usage{
-link_json_metadata(json_path, metadata_split_path,
-  path = "~/bucket/metadata/")
+link_json_metadata(json_path, metadata_split_path, path_base)
 }
 \arguments{
 \item{name}{}

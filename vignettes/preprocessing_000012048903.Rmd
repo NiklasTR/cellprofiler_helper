@@ -1,0 +1,195 @@
+---
+title: "Preprocessing 0000 1204 8903"
+author: "Niklas Rindtorff"
+date: "2/26/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Brightfield Flatfield projection
+## Creating metadata
+
+```{r}
+library(tidyverse)
+library(dcphelper)
+
+
+# Brightfield Flatfield projection
+## Naming target dir 
+
+
+new_path_base = c("/home/ubuntu/bucket/metadata/000012048903__2019-02-06T20_33_15-Measurement_2/",
+                  "/home/ubuntu/bucket/metadata/000012048903__2019-02-05T20_27_41-Measurement_1/",
+                  "/home/ubuntu/bucket/metadata/000012048903__2019-02-07T20_15_54-Measurement_3/")
+
+inbox_path_base= c("/home/ubuntu/bucket/inbox/000012048903__2019-02-06T20_33_15-Measurement_2/Images/",
+                   "/home/ubuntu/bucket/inbox/000012048903__2019-02-05T20_27_41-Measurement_1/Images/",
+                  "/home/ubuntu/bucket/inbox/000012048903__2019-02-07T20_15_54-Measurement_3/Images/")
+
+new_json_path_flat = "/home/ubuntu/bucket/metadata/job_flatfield_template.json"
+new_json_path_max = "/home/ubuntu/bucket/metadata/job_maxproj_template.json"
+new_json_path_seg = "/home/ubuntu/bucket/metadata/job_segmentation_template.json"
+
+
+## Creating target dir 
+
+
+lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
+
+
+## Name channels
+
+
+channel_v <- c("ch1", "ch2", "ch3", "ch4")
+channel_n <- c("pc", "bf", "ce", "tm")
+
+
+
+## Defining metadata
+
+
+
+  for(j in 1:length(inbox_path_base[c(2,3)])){
+  metadata_split_path <- create_flatfield_metadata_split(
+    path = inbox_path_base[c(2,3)][j],
+    channel_of_interest = channel_v[1], #brightfield
+    name = "pc",
+    json_path = new_json_path, #not needed
+    path_base = new_path_base[c(2,3)][j],
+    force = FALSE,
+    include_brightfield_proj = TRUE,
+    include_additional_proj = TRUE)
+  }
+
+
+for(i in 3:length(channel_n)){
+  for(j in 1:length(inbox_path_base)){
+  # metadata_split_path <- create_flatfield_metadata_split(
+  #   path = inbox_path_base[j],
+  #   channel_of_interest = channel_v[i], #brightfield
+  #   name = channel_n[i],
+  #   json_path = new_json_path, #not needed
+  #   path_base = new_path_base[j],
+  #   force = FALSE,
+  #   include_brightfield_proj = FALSE,
+  #   include_additional_proj = FALSE)
+    print(channel_v[i])
+    print(channel_n[i])
+    print(new_path_base[j])
+  }
+}
+```
+
+Unfortunately, the instance broke down during the grouping of files. I 
+
+```{r, eval = FALSE}
+aws s3 mv --recursive s3://ascstore/test/"000012048903__2019-02-06T20_33_15-Measurement 2"/ s3://ascstore/inbox/000012048903__2019-02-06T20_33_15-Measurement_2/
+  
+aws s3 mv --recursive s3://ascstore/test/"000012048903__2019-02-05T20_27_41-Measurement 1"/ s3://ascstore/inbox/000012048903__2019-02-05T20_27_41-Measurement_1/
+
+```
+
+
+## Grouping metadata
+
+```{python, eval = TRUE}
+
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-06T20_33_15-Measurement_2/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "pc"
+
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-06T20_33_15-Measurement_2/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "bf"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-06T20_33_15-Measurement_2/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "ce"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-06T20_33_15-Measurement_2/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "tm"
+
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-05T20_27_41-Measurement_1/
+"['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "pc"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-05T20_27_41-Measurement_1/
+"['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "bf"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-05T20_27_41-Measurement_1/
+"['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "ce"
+
+python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-05T20_27_41-Measurement_1/
+"['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "tm"
+
+
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-07T20_15_54-Measurement_3/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "pc"
+
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-07T20_15_54-Measurement_3/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "bf"
+
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-07T20_15_54-Measurement_3/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "ce"
+
+python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/000012048903__2019-02-07T20_15_54-Measurement_3/ "['Metadata_parent','Metadata_timepoint', 'Metadata_well', 'Metadata_fld', 'Metadata_channel']" "tm"
+
+
+```
+
+## Writing job files
+
+```{r}
+for(j in new_path_base){
+link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = "pc"), 
+                   json_path = new_json_path_seg, 
+                   path_base = j)
+}
+
+
+for(j in new_path_base){
+link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = "bf"), 
+                   json_path = new_json_path_flat, 
+                   path_base = j)
+}
+
+
+channel_n_mod <- channel_n[2:3]
+
+for(j in new_path_base){
+for(i in 1:length(channel_n_mod)){
+link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
+                     stringr::str_subset(pattern = ".csv") %>%
+                     stringr::str_subset(pattern = channel_n_mod[i]), 
+                   json_path = new_json_path_max, 
+                   path_base = j)
+}
+}
+```
+
+## Grouping job files and creating an executable
+
+```{r, eval = FALSE}
+for(j in new_path_base){
+for(i in 1:length(channel_n)){
+group_jobs_bash(path_base = j,
+                name = channel_n[i],
+                letter_row_interval = c(1:16),
+                number_col_interval = c(1:24))
+}
+}
+```
+
+## Running jobs
+
+It is important to run all the jobs first, before renaming files for Deep Learning.
+Everything below has not been adjusted to the plate set at hand.
+
+## Renaming files 
+
+I test the renaming first by removing a dummy directory of fake files. 
+
+```{r, eval = FALSE}
+pip install --user pypng
+pip install --user imageio
+python preprocess.py /home/ubuntu/bucket/flatfield/703__2018-11-07T20_55_16-Measurement_1/ "DPC" "BRIGHTFIELD" "CE" "TMRM"
+```
+
+
