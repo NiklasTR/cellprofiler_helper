@@ -23,5 +23,5 @@ paste0("python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/b
        " ",
        df$channel_n)
 ) %>%
-  write_lines(paste0(plate_name[1], "_create_group.sh"))
+  write_lines(paste0("/home/ubuntu/bucket/dcphelper/", plate_name[1], "_create_group.sh"))
 }
