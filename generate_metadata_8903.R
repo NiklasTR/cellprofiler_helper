@@ -62,7 +62,7 @@ print("Creating shell script for grouping")
 generate_group(plate_name, channel_n)
 
 print("Grouping data using python script")
-source(paste0("/home/ubuntu/bucket/dcphelper/", plate_name[1], "_create_group.sh"))
+source(paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh"))
 
 ################ Aggregating information and executable file
 
