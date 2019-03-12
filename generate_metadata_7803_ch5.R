@@ -84,7 +84,7 @@ for(j in new_path_base){
 }
 
 
-channel_n_mod <- channel_n[3:4]
+channel_n_mod <- channel_n[3:5]
 for(j in new_path_base){
   for(i in 1:length(channel_n_mod)){
     link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%

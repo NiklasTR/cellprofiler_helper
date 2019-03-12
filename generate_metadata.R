@@ -62,7 +62,7 @@ generate_group(plate_name, channel_n)
 
 print("Grouping data using python script")
 path = paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh")
-system(paste0("source ", path))
+system(path)
 
 ################ Aggregating information and executable file
 
