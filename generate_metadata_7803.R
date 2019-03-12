@@ -2,8 +2,8 @@
 ## Define directory names - you will have to change this manually!
 ## The pipeline assumes there is a directory in the "inbox" directory that has the following name:
 ## Call this script with: Rscript generate_metadata_"your-name-here".R
-plate_name = c("000012077803__2019-01-29T12_31_49-Measurement_1",
-               "000012077803__2019-01-29T12_50_08-Measurement_2")
+plate_name = c(#"000012077803__2019-01-29T12_31_49-Measurement_1", this measurment only had Hoechst as a dye
+               "000012077803__2019-01-29T12_50_08-Measurement_2") # This measurment has 5 channels
 
 ################ Sometimes you also have to change these variables
 ## json templates
@@ -12,8 +12,8 @@ new_json_path_max = "/home/ubuntu/bucket/metadata/job_maxproj_template.json"
 new_json_path_seg = "/home/ubuntu/bucket/metadata/job_segmentation_template.json"
 
 ## Name channels
-channel_v <- c("ch1", "ch2", "ch3", "ch4")
-channel_n <- c("pc", "bf", "ce", "tm")
+channel_v <- c("ch1", "ch2", "ch3", "ch4", "ch5")
+channel_n <- c("pc", "bf", "ho", "ce", "tm")
 
 ################ This is where the execution starts
 ################ Creating metadata
