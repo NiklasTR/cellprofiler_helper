@@ -13,7 +13,7 @@ new_json_path_seg = "/home/ubuntu/bucket/metadata/job_segmentation_template.json
 
 ## Name channels
 channel_v <- c("ch1", "ch2", "ch3", "ch4", "ch5")
-channel_n <- c("pc", "bf", "ho", "ce", "tm")
+channel_n <- c("pc", "bf", "dp", "ce", "tm")
 
 ################ This is where the execution starts
 ################ Creating metadata
