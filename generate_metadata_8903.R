@@ -43,18 +43,18 @@ lapply(new_path_base, dir.create) # Do not execute this from a local machine if 
 # }
 
 
-for(i in 2){
-  print(paste0("creating ", channel_n[i], " metadata"))
-  for(j in 1:length(inbox_path_base)){
-    metadata_split_path <- create_flatfield_metadata_split(
-      path = inbox_path_base[j],
-      channel_of_interest = channel_v[i], #brightfield
-      name = channel_n[i],
-      json_path = new_json_path, #not needed
-      path_base = new_path_base[j],
-      force = FALSE)
-  }
-}
+# for(i in 2){
+#   print(paste0("creating ", channel_n[i], " metadata"))
+#   for(j in 1:length(inbox_path_base)){
+#     metadata_split_path <- create_flatfield_metadata_split(
+#       path = inbox_path_base[j],
+#       channel_of_interest = channel_v[i], #brightfield
+#       name = channel_n[i],
+#       json_path = new_json_path, #not needed
+#       path_base = new_path_base[j],
+#       force = FALSE)
+#   }
+# }
 
 ################ Grouping data
 
