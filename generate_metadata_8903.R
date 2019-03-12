@@ -58,12 +58,12 @@ lapply(new_path_base, dir.create) # Do not execute this from a local machine if 
 
 ################ Grouping data
 
-print("Creating shell script for grouping")
-generate_group(plate_name, channel_n)
-
-print("Grouping data using python script")
-path = paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh")
-system(paste0("source ", path))
+# print("Creating shell script for grouping")
+# generate_group(plate_name, channel_n)
+#
+# print("Grouping data using python script")
+# path = paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh")
+# system(paste0("source ", path))
 
 ################ Aggregating information and executable file
 
