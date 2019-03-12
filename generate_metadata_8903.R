@@ -43,7 +43,7 @@ for(j in 1:length(inbox_path_base)){
 }
 
 
-for(i in 3:length(channel_n)){
+for(i in 2:length(channel_n)){
   print(paste0("creating ", channel_n[i], " metadata"))
   for(j in 1:length(inbox_path_base)){
     metadata_split_path <- create_flatfield_metadata_split(

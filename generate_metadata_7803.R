@@ -2,8 +2,8 @@
 ## Define directory names - you will have to change this manually!
 ## The pipeline assumes there is a directory in the "inbox" directory that has the following name:
 ## Call this script with: Rscript generate_metadata_"your-name-here".R
-plate_name = c("000012049003__2019-01-29T19_11_28-Measurement_3",
-               "000012049003__2019-01-31T18_40_09-Measurement_1")
+plate_name = c("000012077803__2019-01-29T12_31_49-Measurement_1",
+               "000012077803__2019-01-29T12_50_08-Measurement_2")
 
 ################ Sometimes you also have to change these variables
 ## json templates
