@@ -57,31 +57,31 @@ lapply(new_path_base, dir.create) # Do not execute this from a local machine if 
 
 ################ Grouping data
 
-print("Creating shell script for grouping")
-generate_group(plate_name, channel_n)
-
-print("Grouping data using python script")
-path = paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh")
-system(path)
+# print("Creating shell script for grouping")
+# generate_group(plate_name, channel_n)
+#
+# print("Grouping data using python script")
+# path = paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh")
+# system(path)
 
 ################ Aggregating information and executable file
 
-for(j in new_path_base){
-  link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
-                       stringr::str_subset(pattern = ".csv") %>%
-                       stringr::str_subset(pattern = "pc"),
-                     json_path = new_json_path_seg,
-                     path_base = j)
-}
-
-
-for(j in new_path_base){
-  link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
-                       stringr::str_subset(pattern = ".csv") %>%
-                       stringr::str_subset(pattern = "bf"),
-                     json_path = new_json_path_flat,
-                     path_base = j)
-}
+# for(j in new_path_base){
+#   link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
+#                        stringr::str_subset(pattern = ".csv") %>%
+#                        stringr::str_subset(pattern = "pc"),
+#                      json_path = new_json_path_seg,
+#                      path_base = j)
+# }
+#
+#
+# for(j in new_path_base){
+#   link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
+#                        stringr::str_subset(pattern = ".csv") %>%
+#                        stringr::str_subset(pattern = "bf"),
+#                      json_path = new_json_path_flat,
+#                      path_base = j)
+# }
 
 
 channel_n_mod <- channel_n[3:5]
