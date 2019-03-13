@@ -24,25 +24,25 @@ library(dcphelper)
 new_path_base = paste0("/home/ubuntu/bucket/metadata/", plate_name,"/")
 inbox_path_base= paste0("/home/ubuntu/bucket/inbox/", plate_name,"/Images/")
 
-## Creating target dir
-lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
+# ## Creating target dir
+# lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
+#
+# ## Creating metadata directories
+# print("creating pc metadata")
+# for(j in 1:length(inbox_path_base)){
+#   metadata_split_path <- create_flatfield_metadata_split(
+#     path = inbox_path_base[j],
+#     channel_of_interest = channel_v[1], #brightfield
+#     name = "pc",
+#     json_path = new_json_path, #not needed
+#     path_base = new_path_base[j],
+#     force = FALSE,
+#     include_brightfield_proj = TRUE,
+#     include_additional_proj = TRUE)
+# }
 
-## Creating metadata directories
-print("creating pc metadata")
-for(j in 1:length(inbox_path_base)){
-  metadata_split_path <- create_flatfield_metadata_split(
-    path = inbox_path_base[j],
-    channel_of_interest = channel_v[1], #brightfield
-    name = "pc",
-    json_path = new_json_path, #not needed
-    path_base = new_path_base[j],
-    force = FALSE,
-    include_brightfield_proj = TRUE,
-    include_additional_proj = TRUE)
-}
 
-
-for(i in 2:length(channel_n)){
+for(i in 2){
   print(paste0("creating ", channel_n[i], " metadata"))
   for(j in 1:length(inbox_path_base)){
     metadata_split_path <- create_flatfield_metadata_split(
