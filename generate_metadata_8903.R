@@ -30,17 +30,17 @@ lapply(new_path_base, dir.create) # Do not execute this from a local machine if 
 
 ## Creating metadata directories
 # print("creating pc metadata")
-# for(j in 1:length(inbox_path_base)){
-#   metadata_split_path <- create_flatfield_metadata_split(
-#     path = inbox_path_base[j],
-#     channel_of_interest = channel_v[1], #brightfield
-#     name = "pc",
-#     json_path = new_json_path, #not needed
-#     path_base = new_path_base[j],
-#     force = FALSE,
-#     include_brightfield_proj = TRUE,
-#     include_additional_proj = TRUE)
-# }
+for(j in 1:length(inbox_path_base)){
+  metadata_split_path <- create_flatfield_metadata_split(
+    path = inbox_path_base[j],
+    channel_of_interest = channel_v[1], #brightfield
+    name = "pc",
+    json_path = new_json_path, #not needed
+    path_base = new_path_base[j],
+    force = FALSE,
+    include_brightfield_proj = TRUE,
+    include_additional_proj = TRUE)
+}
 
 
 # for(i in 2){
@@ -66,43 +66,43 @@ lapply(new_path_base, dir.create) # Do not execute this from a local machine if 
 # system(paste0("source ", path))
 
 ################ Aggregating information and executable file
-
-for(j in new_path_base){
-  link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
-                       stringr::str_subset(pattern = ".csv") %>%
-                       stringr::str_subset(pattern = "pc"),
-                     json_path = new_json_path_seg,
-                     path_base = j)
-}
-
-
-for(j in new_path_base){
-  link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
-                       stringr::str_subset(pattern = ".csv") %>%
-                       stringr::str_subset(pattern = "bf"),
-                     json_path = new_json_path_flat,
-                     path_base = j)
-}
-
-
-channel_n_mod <- channel_n[3:4]
-for(j in new_path_base){
-  for(i in 1:length(channel_n_mod)){
-    link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
-                         stringr::str_subset(pattern = ".csv") %>%
-                         stringr::str_subset(pattern = channel_n_mod[i]),
-                       json_path = new_json_path_max,
-                       path_base = j)
-  }
-}
-
-### Grouping final job files
-
-for(j in new_path_base){
-  for(i in 1:length(channel_n)){
-    group_jobs_bash(path_base = j,
-                    name = channel_n[i],
-                    letter_row_interval = c(1:16),
-                    number_col_interval = c(1:24))
-  }
-}
+#
+# for(j in new_path_base){
+#   link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
+#                        stringr::str_subset(pattern = ".csv") %>%
+#                        stringr::str_subset(pattern = "pc"),
+#                      json_path = new_json_path_seg,
+#                      path_base = j)
+# }
+#
+#
+# for(j in new_path_base){
+#   link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
+#                        stringr::str_subset(pattern = ".csv") %>%
+#                        stringr::str_subset(pattern = "bf"),
+#                      json_path = new_json_path_flat,
+#                      path_base = j)
+# }
+#
+#
+# channel_n_mod <- channel_n[3:4]
+# for(j in new_path_base){
+#   for(i in 1:length(channel_n_mod)){
+#     link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
+#                          stringr::str_subset(pattern = ".csv") %>%
+#                          stringr::str_subset(pattern = channel_n_mod[i]),
+#                        json_path = new_json_path_max,
+#                        path_base = j)
+#   }
+# }
+#
+# ### Grouping final job files
+#
+# for(j in new_path_base){
+#   for(i in 1:length(channel_n)){
+#     group_jobs_bash(path_base = j,
+#                     name = channel_n[i],
+#                     letter_row_interval = c(1:16),
+#                     number_col_interval = c(1:24))
+#   }
+# }
