@@ -343,3 +343,9 @@ python ~/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/0000
 
 ```
 
+
+I did all of this using the new *generator* scripts. They are simple executable R scripts, covering all of the code above. 
+
+I manually created a masterfile to batch up the grouped DCP calls. This is something that has to be done manually right now and is not stored.
+
+I encountered errors in the segmentation pipeline. For now I send of everything for processing but comment out the DCP run.
