@@ -497,6 +497,7 @@ I run the script on the *903 directories and rename the .tiff files.
 python /home/ubuntu/bucket/isl_preprocess/sample/revert.py '/home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3' 'ch3'
 python /home/ubuntu/bucket/isl_preprocess/sample/revert.py '/home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3' 'ch4'
 
+
 ```
 
 In parallel, I started training the network on the whole dataset. I am evalauting the progress by running the following command on a p2 GPU instance. 
@@ -691,3 +692,15 @@ p3 + p4
 
 
 ![55864 episodes](~/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2/eval_eval_infer/00032220/target_error_panel.png)
+
+
+# Testing ISL feature extraction 
+
+I run inference on the standard evaluation dataset after tweaking the ISL network to export embeddings. 
+
+Now I run the segmentation script. 
+
+```{r, eval = FALSE}
+python embeddings.py /home/ubuntu/bucket/model/isl_cpu_ce_tmrm_quantile_99_plate_2/eval_eval_infer/00033801 /home/ubuntu/bucket/flatfield/000012070903_2019-01-10T20_04_27-Measurement_3/000012070903_2019-01-10T20_04_27-Measurement_3-sk1-N02-f03-ch1/segmentation_000012070903_2019-01-10T20_04_27-Measurement_3_sk1_N02_f03_ch1.tiff /home/ubuntu
+```
+
