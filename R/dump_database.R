@@ -13,7 +13,7 @@
 #' @import RSQLite
 #'
 #' @examples
-dump_database <- function(x, name_of_table = "cells", pool = pool){
+dump_database <- function(x, name_of_table = "cells"){
   x %>%
     read_csv %>%
     mutate(id = stringr::str_split(x, pattern = "/") %>% unlist() %>% .[8]) %>%
