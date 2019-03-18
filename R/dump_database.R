@@ -19,4 +19,6 @@ dump_database <- function(x, name_of_table = "cells", pool = pool){
     mutate(id = stringr::str_split(x, pattern = "/") %>% unlist() %>% .[8]) %>%
   janitor::clean_names() %>%
   dbWriteTable(pool, name_of_table, ., append = TRUE)
+
+  print(paste0("dumped ", x))
 }
