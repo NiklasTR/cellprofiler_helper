@@ -109,5 +109,5 @@ for(j in new_path_base){
 
 # collecting features after processing
 for(i in flatfield_path_base){
-  collect_feature_data(j)
+  collect_feature_data(i)
 }
