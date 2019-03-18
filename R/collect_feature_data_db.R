@@ -21,7 +21,7 @@ collect_feature_data_db <- function(path_data,
   pool <- pool::dbPool(RSQLite::SQLite(), dbname = database)
   files <- list.files(path_data, pattern = channel_of_interest, full.names = TRUE) %>% paste0(., "/", measurment_of_interest)
 
-  tmp <- files %>% parallel::mclapply(dump_database)
+  tmp <- files %>% lapply(dump_database)
 
   # giving the database back
   timestamp <- Sys.time() %>% stringr::str_remove_all(" ") %>% stringr::str_remove_all(":")
