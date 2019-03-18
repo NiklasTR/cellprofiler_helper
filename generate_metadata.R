@@ -23,6 +23,7 @@ library(dcphelper)
 ## Define paths
 new_path_base = paste0("/home/ubuntu/bucket/metadata/", plate_name,"/")
 inbox_path_base= paste0("/home/ubuntu/bucket/inbox/", plate_name,"/Images/")
+flatfield_path_base= paste0("/home/ubuntu/bucket/flatfield/", plate_name,"/")
 
 ## Creating target dir
 lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
@@ -104,4 +105,9 @@ for(j in new_path_base){
                     letter_row_interval = c(1:16),
                     number_col_interval = c(1:24))
   }
+}
+
+# collecting features after processing
+for(i in flatfield_path_base){
+  collect_feature_data(j)
 }
