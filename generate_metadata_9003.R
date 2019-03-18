@@ -3,7 +3,9 @@
 ## The pipeline assumes there is a directory in the "inbox" directory that has the following name:
 ## Call this script with: Rscript generate_metadata_"your-name-here".R
 plate_name = c("000012049003__2019-01-29T19_11_28-Measurement_3",
-               "000012049003__2019-01-31T18_40_09-Measurement_1")
+               "000012049003__2019-01-31T18_40_09-Measurement_1",
+               "000012049003__2019-02-01T12_09_07-Measurement_4",
+               "000012049003__2019-01-28T21_02_07-Measurement_2") # added later on for feature grouping
 
 ################ Sometimes you also have to change these variables
 ## json templates
@@ -23,23 +25,24 @@ library(dcphelper)
 ## Define paths
 new_path_base = paste0("/home/ubuntu/bucket/metadata/", plate_name,"/")
 inbox_path_base= paste0("/home/ubuntu/bucket/inbox/", plate_name,"/Images/")
+flatfield_path_base= paste0("/home/ubuntu/bucket/flatfield/", plate_name,"/")
 
 # ## Creating target dir
 # lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
 #
 # ## Creating metadata directories
-print("creating pc metadata")
-for(j in 1:length(inbox_path_base)){
-  metadata_split_path <- create_flatfield_metadata_split(
-    path = inbox_path_base[j],
-    channel_of_interest = channel_v[1], #brightfield
-    name = "pc",
-    json_path = new_json_path, #not needed
-    path_base = new_path_base[j],
-    force = FALSE,
-    include_brightfield_proj = TRUE,
-    include_additional_proj = TRUE)
-}
+# print("creating pc metadata")
+# for(j in 1:length(inbox_path_base)){
+#   metadata_split_path <- create_flatfield_metadata_split(
+#     path = inbox_path_base[j],
+#     channel_of_interest = channel_v[1], #brightfield
+#     name = "pc",
+#     json_path = new_json_path, #not needed
+#     path_base = new_path_base[j],
+#     force = FALSE,
+#     include_brightfield_proj = TRUE,
+#     include_additional_proj = TRUE)
+# }
 
 
 # for(i in 2){
@@ -105,3 +108,8 @@ for(j in 1:length(inbox_path_base)){
 #                     number_col_interval = c(1:24))
 #   }
 # }
+
+# collecting features after processing
+for(i in flatfield_path_base){
+  collect_feature_data(j)
+}
