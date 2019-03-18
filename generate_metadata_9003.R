@@ -111,5 +111,5 @@ flatfield_path_base= paste0("/home/ubuntu/bucket/flatfield/", plate_name,"/")
 
 # collecting features after processing
 for(i in flatfield_path_base){
-  collect_feature_data(i)
+  collect_feature_data_db(i)
 }
