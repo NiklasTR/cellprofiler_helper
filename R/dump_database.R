@@ -10,6 +10,7 @@
 #' @import janitor
 #' @import stringr
 #' @import pool
+#' @import RSQLite
 #'
 #' @examples
 dump_database <- function(x, name_of_table = "cells", pool = pool){

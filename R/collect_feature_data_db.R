@@ -8,6 +8,7 @@
 #' @export
 #' @import parallel
 #' @import janitor
+#' @import RSQLite
 #'
 #' @examples
 collect_feature_data_db <- function(path_data,
