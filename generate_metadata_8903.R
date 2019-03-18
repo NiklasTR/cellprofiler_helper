@@ -2,7 +2,7 @@
 ## Define directory names - you will have to change this manually!
 ## The pipeline assumes there is a directory in the "inbox" directory that has the following name:
 ## Call this script with: Rscript generate_metadata_"your-name-here".R
-plate_name = c("000012048903__2019-02-06T20_33_15-Measurement_2",
+plate_name = c(#"000012048903__2019-02-06T20_33_15-Measurement_2",
                "000012048903__2019-02-05T20_27_41-Measurement_1",
                "000012048903__2019-02-07T20_15_54-Measurement_3",
                "000012048903__2019-02-08T17_19_00-Measurement_4") # adding additional plate for final feature grouping
