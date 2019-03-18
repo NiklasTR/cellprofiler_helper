@@ -111,5 +111,5 @@ lapply(new_path_base, dir.create) # Do not execute this from a local machine if 
 
 # collecting features after processing
 for(i in flatfield_path_base){
-  collect_feature_data(j)
+  collect_feature_data(i)
 }
