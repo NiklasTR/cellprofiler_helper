@@ -7,6 +7,8 @@ output: html_notebook
 library(pool)
 library(RPostgres)
 library(DBI)
+library(tidyverse)
+library(dbplyr)
 ```
 
 ```{r}
@@ -20,5 +22,14 @@ pool <- pool::dbPool(RPostgres::Postgres(),
 
 ```{r}
 dbListTables(pool)
+```
+
+```{r}
+cells <- tbl(pool, "cells")
+```
+
+
+```{r}
+cells %>% count(image_number) %>% arrange(image_number)
 ```
 
