@@ -11,7 +11,7 @@ new_json_path_flat = "/home/ubuntu/bucket/metadata/job_flatfield_template.json"
 new_json_path_max = "/home/ubuntu/bucket/metadata/job_maxproj_template.json"
 new_json_path_seg = "/home/ubuntu/bucket/metadata/job_segmentation_template.json"
 
-## Name channels
+## Name of channels
 channel_v <- c("ch1", "ch2", "ch3", "ch4")
 channel_n <- c("pc", "bf", "ce", "tm")
 
