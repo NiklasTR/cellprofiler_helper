@@ -1,0 +1,35 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+library(pool)
+library(RPostgres)
+library(DBI)
+library(tidyverse)
+library(dbplyr)
+```
+
+```{r}
+pool <- pool::dbPool(RPostgres::Postgres(), 
+                     host = "biosensor.c9k2hfiwt5mi.us-east-2.rds.amazonaws.com",
+                     dbname = "biosensor",
+                     port = 5432,
+                     user = "biosensor",
+                     password = readLines("data/password.txt"))
+```
+
+```{r}
+dbListTables(pool)
+```
+
+```{r}
+cells <- tbl(pool, "cells")
+```
+
+
+```{r}
+cells %>% count(image_number) %>% arrange(image_number)
+```
+
