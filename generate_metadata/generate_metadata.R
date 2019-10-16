@@ -110,5 +110,5 @@ for(j in new_path_base){
 # collecting features after processing
 for(i in flatfield_path_base){
   print(paste0("collecting data ", i))
-  collect_feature_data(i)
+  collect_feature_data_db(i)
 }
