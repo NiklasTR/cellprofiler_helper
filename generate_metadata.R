@@ -2,9 +2,11 @@
 ## Define directory names - you will have to change this manually!
 ## The pipeline assumes there is a directory in the "inbox" directory that has the following name:
 ## Call this script with: Rscript generate_metadata_"your-name-here".R
-plate_name = c("000012095103__2019-09-04T17_26_03-Measurement_1",
-               "000012095103__2019-09-05T17_14_14-Measurement_2",
-               "000012095103__2019-09-06T17_24_19-Measurement_3")
+# plate_name = c("000012095103__2019-09-04T17_26_03-Measurement_1",
+#                "000012095103__2019-09-05T17_14_14-Measurement_2",
+#                "000012095103__2019-09-06T17_24_19-Measurement_3")
+
+plate_name = args = commandArgs(trailingOnly=TRUE)
 
 ################ Sometimes you also have to change these variables
 ## json templates
@@ -67,6 +69,7 @@ path = paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1]
 system(path)
 
 ################ Aggregating information and executable file
+print("Aggregating information and executable file")
 
 for(j in new_path_base){
   link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
