@@ -1,0 +1,50 @@
+---
+title: "Imaging Inventory"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(stringr)
+library(googlesheets4)
+```
+
+
+```{r}
+inbox <- tibble(inbox = list.files("/home/niklas/bucket/inbox")) %>% 
+  mutate(inbox_name = if_else(grepl(pattern = "^0000\\d+__\\d+-\\d\\d-\\d+T\\d+_\\d+_\\d+-Measurement_\\d$",
+                                    perl = TRUE,
+                                    x = inbox),
+                              TRUE, FALSE)) %>% 
+  filter(inbox != "README.txt") %>% 
+  mutate(barcode = str_extract(pattern = "^\\d+", string = inbox) %>% as.numeric())
+
+```
+
+
+```{r}
+options(httr_oob_default=TRUE)
+cclf_ascites <- sheets_get("https://docs.google.com/spreadsheets/d/1qt_Mjstws4kcZ2mYHAXWXCS8reNoFFtoeDyl58Kod5I/edit#gid=1808620852")
+
+cclf_imaging <- cclf_ascites$spreadsheet_id %>%
+    #ugly fix to use the spreadsheet id see https://github.com/tidyverse/googlesheets4/issues/74
+    read_sheet(sheet = "imaging")
+```
+
+```{r, eval = FALSE}
+inbox %>% 
+  full_join(cclf_imaging) %>%
+  filter(!imaging_status %in% c("failed", "test")) %>% View()
+```
+
+```{r}
+inbox %>% 
+  full_join(cclf_imaging) %>%
+  filter(!imaging_status %in% c("failed", "test")) %>%
+  filter(inbox_name == TRUE & is.na(sample)) %>% View()
+```
+

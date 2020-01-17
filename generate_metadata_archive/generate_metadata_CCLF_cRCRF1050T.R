@@ -67,6 +67,7 @@ path = paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1]
 system(path)
 
 ################ Aggregating information and executable file
+print("Aggregating information and executable file")
 
 for(j in new_path_base){
   link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
