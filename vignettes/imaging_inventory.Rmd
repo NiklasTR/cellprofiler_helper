@@ -21,14 +21,15 @@ inbox <- tibble(inbox = list.files("/home/niklas/bucket/inbox")) %>%
                                     x = inbox),
                               TRUE, FALSE)) %>% 
   filter(inbox != "README.txt") %>% 
-  mutate(barcode = str_extract(pattern = "^\\d+", string = inbox) %>% as.numeric())
+  mutate(barcode = str_extract(pattern = "^\\d+", string = inbox) %>% as.numeric()) %>% 
+  mutate(flatfield = if_else(inbox %in% list.files("/home/niklas/bucket/flatfield"), TRUE, FALSE))
 
 ```
 
 
 ```{r}
 options(httr_oob_default=TRUE)
-cclf_ascites <- sheets_get("https://docs.google.com/spreadsheets/d/1qt_Mjstws4kcZ2mYHAXWXCS8reNoFFtoeDyl58Kod5I/edit#gid=1808620852")
+cclf_ascites <- sheets_get("1o7kA5M8SZL0aYW8VzA4fLMG9lpVKohpeVD1De3KcPP0")
 
 cclf_imaging <- cclf_ascites$spreadsheet_id %>%
     #ugly fix to use the spreadsheet id see https://github.com/tidyverse/googlesheets4/issues/74
@@ -38,13 +39,11 @@ cclf_imaging <- cclf_ascites$spreadsheet_id %>%
 ```{r, eval = FALSE}
 inbox %>% 
   full_join(cclf_imaging) %>%
-  filter(!imaging_status %in% c("failed", "test")) %>% View()
+  filter(!imaging_status %in% c("failed", "test")) %>% 
+  filter(perturbation == TRUE)
 ```
 
 ```{r}
-inbox %>% 
-  full_join(cclf_imaging) %>%
-  filter(!imaging_status %in% c("failed", "test")) %>%
-  filter(inbox_name == TRUE & is.na(sample)) %>% View()
+
 ```
 
