@@ -1,5 +1,6 @@
 ################ Important Inputs
 ## Define directory names - you will have to change this manually!
+## Make sure the directories contain no spaces!
 ## The pipeline assumes there is a directory in the "inbox" directory that has the following name:
 ## Call this script with: Rscript generate_metadata_"your-name-here".R
 # plate_name = c("000012095103__2019-09-04T17_26_03-Measurement_1",
