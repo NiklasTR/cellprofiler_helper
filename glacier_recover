@@ -1,0 +1,12 @@
+#!/bin/sh
+
+# recovering files for re-analysis
+# first arg: 000012048903
+# second arg: 'ascstore'
+
+for x in `awk '/$1/' glacier-restore.txt`
+  do
+    echo "Begin restoring $x"
+    aws s3api restore-object --restore-request Days=7 --bucket $2 --key "$x"
+    echo "Done restoring $x"
+  done
