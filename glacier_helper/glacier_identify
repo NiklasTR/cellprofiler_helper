@@ -1,0 +1,7 @@
+#!/bin/sh
+# first argument is the bucket: ascstore
+
+# building index of all glaciered files
+aws s3api list-objects-v2 --bucket ascstore --query "Contents[?StorageClass=='GLACIER']" --output text | awk '{print $2}' > glacier-restore.txt
+
+--prefix
