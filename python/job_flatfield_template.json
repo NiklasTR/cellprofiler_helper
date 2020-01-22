@@ -1,0 +1,22 @@
+{
+  "_comment1": "Paths in this file are relative to the root of your S3 bucket",
+  "pipeline": "rapid/cellprofiler/pipelines/bf_root_tpwell_g135.cppipe",
+  "data_file": "metadata/metadata_bf_truncated.csv",
+  "input": "blank",
+  "output": "flatfield/000012070903_2019-01-10T20_04_27-Measurement_3",
+  "output_structure": "Metadata_parent-Metadata_timepoint-Metadata_well-Metadata_fld-Metadata_channel",
+  "_comment2": "The following groups are tasks, and each will be run in parallel",
+  "groups": [
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f01,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f02,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f03,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f04,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f05,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f01,Metadata_timepoint=sk2,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f02,Metadata_timepoint=sk2,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f03,Metadata_timepoint=sk2,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f04,Metadata_timepoint=sk2,Metadata_well=A01,Metadata_channel=ch2"},
+    {"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_fld=f05,Metadata_timepoint=sk2,Metadata_well=A01,Metadata_channel=ch2"}
+  ]
+}
+
