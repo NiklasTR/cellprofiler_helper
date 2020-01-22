@@ -28,6 +28,13 @@ collect_feature_data_db <- function(path_data,
                        password = readLines("~/password.txt"))
   print("listing files")
   files <- list.files(path_data, pattern = channel_of_interest, full.names = TRUE) %>% paste0(., "/", measurment_of_interest)
+  # I want to avoid saving data that is redundant. Therefore I want to remove every entry from the list of files, that has a matching id in the database
+  # I pull the vector of ids in the database
+  print("identifying new data")
+  cells <- tbl(pool, "cells")
+  existing_id <- cells %>% dplyr::select(id) %>% collect() %>% .$id
+  # The following function takes the list of files and existing ids. It returns a list of files that have been filtered for the ids
+
 
   tmp <- files %>% parallel::mclapply(dump_database, con = pool)
 

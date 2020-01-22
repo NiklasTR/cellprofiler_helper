@@ -17,7 +17,7 @@ pool <- pool::dbPool(RPostgres::Postgres(),
                      dbname = "biosensor",
                      port = 5432,
                      user = "biosensor",
-                     password = readLines("data/password.txt"))
+                     password = readLines("~/password.txt"))
 ```
 
 ```{r}
