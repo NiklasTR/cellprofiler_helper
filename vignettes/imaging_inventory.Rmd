@@ -36,11 +36,12 @@ cclf_imaging <- cclf_ascites$spreadsheet_id %>%
     read_sheet(sheet = "imaging")
 ```
 
-```{r, eval = FALSE}
+```{r, eval = TRUE}
 inbox %>% 
   full_join(cclf_imaging) %>%
   filter(!imaging_status %in% c("failed", "test")) %>% 
-  filter(perturbation == TRUE)
+  filter(perturbation == TRUE) %>% 
+  select(start_date, barcode, flatfield) %>% distinct()
 ```
 
 ```{r}
