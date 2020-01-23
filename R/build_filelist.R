@@ -1,4 +1,4 @@
-#' Title
+#' List all elements in a directory and store a list of them in the metadata directory. If a filelist has already been created, it will not list all files again
 #'
 #' @param path
 #'

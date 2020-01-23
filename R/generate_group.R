@@ -14,14 +14,18 @@ df <- expand.grid(plate_name, channel_n) %>%
   as_tibble() %>%
   magrittr::set_colnames(c("plate_name", "channel_n"))
 
+path = paste0("~/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh")
+
 # creating bash script
 c("#!/bin/sh",
-paste0("python /home/ubuntu/bucket/metadata/ManualMetadata_dir.py /home/ubuntu/bucket/metadata/",
+paste0("python ~/dcp_helper/python/ManualMetadata_dir.py ~/bucket/metadata/",
        df$plate_name,
        "/ ",
        read_lines("group_template.txt"),
        " ",
        df$channel_n)
 ) %>%
-  write_lines(paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh"))
+  write_lines(path)
+
+return(path)
 }

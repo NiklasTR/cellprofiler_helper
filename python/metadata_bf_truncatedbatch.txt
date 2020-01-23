@@ -1,0 +1,6 @@
+{"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_timepoint=sk1,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_fld=f01,Metadata_channel=ch2"}, 
+{"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_timepoint=sk2,Metadata_timepoint=sk2,Metadata_well=A01,Metadata_fld=f01,Metadata_channel=ch2"}, 
+{"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_timepoint=sk1,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_fld=f02,Metadata_channel=ch2"}, 
+{"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_timepoint=sk2,Metadata_timepoint=sk2,Metadata_well=A01,Metadata_fld=f02,Metadata_channel=ch2"}, 
+{"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_timepoint=sk1,Metadata_timepoint=sk1,Metadata_well=A01,Metadata_fld=f03,Metadata_channel=ch2"}, 
+{"Metadata": "Metadata_parent=703__2018-11-07T20_55_16-Measurement_1,Metadata_timepoint=sk2,Metadata_timepoint=sk2,Metadata_well=A01,Metadata_fld=f03,Metadata_channel=ch2"}, 

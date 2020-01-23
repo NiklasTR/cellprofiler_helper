@@ -2,18 +2,18 @@
 ## Define directory names - you will have to change this manually!
 ## Make sure the directories contain no spaces!
 ## The pipeline assumes there is a directory in the "inbox" directory that has the following name:
-## Call this script with: Rscript generate_metadata_"your-name-here".R
-# plate_name = c("000012095103__2019-09-04T17_26_03-Measurement_1",
-#                "000012095103__2019-09-05T17_14_14-Measurement_2",
-#                "000012095103__2019-09-06T17_24_19-Measurement_3")
+## Call this script with: Rscript generate_metadata_"your-platename(s)-here".R
 
 plate_name = args = commandArgs(trailingOnly=TRUE)
+# for debugging only
+#plate_name = "000012095203__2019-12-09T17_58_26-Measurement_1"
+print(paste0("Processing plate ", plate_name))
 
 ################ Sometimes you also have to change these variables
 ## json templates
-new_json_path_flat = "/home/ubuntu/bucket/metadata/job_flatfield_template.json"
-new_json_path_max = "/home/ubuntu/bucket/metadata/job_maxproj_template.json"
-new_json_path_seg = "/home/ubuntu/bucket/metadata/job_segmentation_template.json"
+new_json_path_flat = "~/dcp_helper/python/job_flatfield_template.json"
+new_json_path_max = "~/dcp_helper/python/job_maxproj_template.json"
+new_json_path_seg = "~/dcp_helper/python/job_segmentation_template.json"
 
 ## Name of channels
 channel_v <- c("ch1", "ch2", "ch3", "ch4")
@@ -23,15 +23,17 @@ channel_n <- c("pc", "bf", "ce", "tm")
 ################ Creating metadata
 library(tidyverse)
 library(dcphelper)
+library(tictoc)
 
 ## Define paths
-new_path_base = paste0("/home/ubuntu/bucket/metadata/", plate_name,"/")
-inbox_path_base= paste0("/home/ubuntu/bucket/inbox/", plate_name,"/Images/")
-flatfield_path_base= paste0("/home/ubuntu/bucket/flatfield/", plate_name,"/")
+new_path_base = paste0("~/bucket/metadata/", plate_name,"/")
+inbox_path_base= paste0("~/bucket/inbox/", plate_name,"/Images/")
+flatfield_path_base= paste0("~/bucket/flatfield/", plate_name,"/")
 
 ## Creating target dir
 lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
 
+tic()
 ## Creating metadata directories
 print("creating pc metadata")
 for(j in 1:length(inbox_path_base)){
@@ -45,8 +47,9 @@ for(j in 1:length(inbox_path_base)){
     include_brightfield_proj = TRUE,
     include_additional_proj = TRUE)
 }
+toc()
 
-
+tic()
 for(i in 2:length(channel_n)){
   print(paste0("creating ", channel_n[i], " metadata"))
   for(j in 1:length(inbox_path_base)){
@@ -59,19 +62,24 @@ for(i in 2:length(channel_n)){
       force = FALSE)
   }
 }
+toc()
 
 ################ Grouping data
 
+tic()
 print("Creating shell script for grouping")
-generate_group(plate_name, channel_n)
+path <- generate_group(plate_name, channel_n)
+toc()
 
+tic()
 print("Grouping data using python script")
-path = paste0("/home/ubuntu/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_group.sh")
 system(path)
+toc()
 
 ################ Aggregating information and executable file
 print("Aggregating information and executable file")
 
+tic()
 for(j in new_path_base){
   link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
                        stringr::str_subset(pattern = ".csv") %>%
@@ -79,8 +87,9 @@ for(j in new_path_base){
                      json_path = new_json_path_seg,
                      path_base = j)
 }
+toc()
 
-
+tic()
 for(j in new_path_base){
   link_json_metadata(metadata_split_path = list.files(j, pattern = "metadata_", full.names = TRUE) %>%
                        stringr::str_subset(pattern = ".csv") %>%
@@ -88,8 +97,9 @@ for(j in new_path_base){
                      json_path = new_json_path_flat,
                      path_base = j)
 }
+toc()
 
-
+tic()
 channel_n_mod <- channel_n[3:4]
 for(j in new_path_base){
   for(i in 1:length(channel_n_mod)){
@@ -100,9 +110,11 @@ for(j in new_path_base){
                        path_base = j)
   }
 }
+toc()
 
 ### Grouping final job files
 
+tic()
 for(j in new_path_base){
   for(i in 1:length(channel_n)){
     group_jobs_bash(path_base = j,
@@ -111,9 +123,10 @@ for(j in new_path_base){
                     number_col_interval = c(1:24))
   }
 }
+toc()
 
 # collecting features after processing
-for(i in flatfield_path_base){
-  print(paste0("collecting data ", i))
-  collect_feature_data_db(i)
-}
+#for(i in flatfield_path_base){
+#  print(paste0("collecting data ", i))
+#  collect_feature_data_db(i)
+#}
