@@ -7,7 +7,7 @@
 #'
 #' @examples
 group_metadata_bash <- function(metadata_split_path, path_base,
-                                python_function = "python ~/bucket/metadata/ManualMetadata_dir.py ",
+                                python_function = "python ~/dcp_helper/python/ManualMetadata_dir.py ",
                                 metadata_grouping = "[\'Metadata_parent\',\'Metadata_timepoint\', \'Metadata_well\', \'Metadata_fld\', \'Metadata_channel\']"){
 
   bash_file <- paste0(path_base, "group_metadata_split_path.sh")
