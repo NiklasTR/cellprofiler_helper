@@ -45,7 +45,7 @@ create_flatfield_metadata_split <- function(path = paste0(getwd(), "/"),
   metadata_split_path <- write_metadata_split(file_ff, name = name, path_base = path_base)
 
   # Creating metadata bash file
-  group_metadata_bash(metadata_split_path, path_base)
+  #group_metadata_bash(metadata_split_path, path_base)
 
   return(metadata_split_path)
 
