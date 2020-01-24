@@ -43,7 +43,7 @@ for(j in 1:length(inbox_path_base)){
     name = "pc",
     json_path = new_json_path, #not needed
     path_base = new_path_base[j],
-    force = TRUE,
+    force = FALSE,
     include_brightfield_proj = TRUE,
     include_additional_proj = TRUE)
 }
@@ -70,6 +70,8 @@ tic()
 print("Creating shell script for grouping")
 path <- generate_group(plate_name, channel_n)
 toc()
+
+print(path)
 
 tic()
 print("Grouping data using python script")

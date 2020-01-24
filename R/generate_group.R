@@ -18,6 +18,7 @@ path = paste0("~/bucket/metadata/", plate_name[1], "/", plate_name[1], "_create_
 
 # creating bash script
 c("#!/bin/sh",
+  'pip install --user pandas', #ugly way of managing the dependency of the cellprofiler function
 paste0("python ~/dcp_helper/python/ManualMetadata_dir.py ~/bucket/metadata/",
        df$plate_name,
        "/ ",
