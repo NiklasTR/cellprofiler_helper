@@ -4,7 +4,7 @@
 ## The pipeline assumes there is a directory in the "inbox" directory that has the following name:
 ## Call this script with: Rscript generate_metadata_"your-platename(s)-here".R
 
-plate_name = commandArgs(trailingOnly=TRUE)
+plate_name = args = commandArgs(trailingOnly=TRUE)
 # for debugging only
 #plate_name = "000012095203__2019-12-09T17_58_26-Measurement_1"
 print(paste0("Processing plate ", plate_name))
@@ -26,7 +26,7 @@ library(dcphelper)
 library(tictoc)
 
 ## Define paths
-new_path_base = paste0("~/bucket/metadata/", plate_name,"/")
+new_path_base = paste0("~/dcp_helper/metadata/", plate_name,"/")
 inbox_path_base= paste0("~/bucket/inbox/", plate_name,"/Images/")
 flatfield_path_base= paste0("~/bucket/flatfield/", plate_name,"/")
 
@@ -43,7 +43,7 @@ for(j in 1:length(inbox_path_base)){
     name = "pc",
     json_path = new_json_path, #not needed
     path_base = new_path_base[j],
-    force = TRUE,
+    force = FALSE,
     include_brightfield_proj = TRUE,
     include_additional_proj = TRUE)
 }
@@ -68,7 +68,7 @@ toc()
 
 tic()
 print("Creating shell script for grouping")
-path <- generate_group(plate_name, channel_n)
+path <- generate_group(plate_name, channel_n, new_path_base)
 toc()
 
 tic()
