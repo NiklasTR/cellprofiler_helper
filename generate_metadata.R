@@ -71,6 +71,8 @@ print("Creating shell script for grouping")
 path <- generate_group(plate_name, channel_n, new_path_base)
 toc()
 
+print(path)
+
 tic()
 print("Grouping data using python script")
 system(path)

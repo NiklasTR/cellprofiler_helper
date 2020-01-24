@@ -1,4 +1,4 @@
-#' Creating a shell script that used the Distributed Cell Profiler script ManualMetadata.py to create groupings
+#' LEGACY: Creating a shell script that used the Distributed Cell Profiler script ManualMetadata.py to create groupings
 #'
 #' @param metadata_split_path
 #'
