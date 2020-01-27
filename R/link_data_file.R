@@ -11,7 +11,8 @@
 link_data_file <- function(metadata_split_path, json_template, json_path, path_base){
   json_new <- json_template #propably not needed
 
-  json_new$data_file <- metadata_split_path %>% str_sub(21, -1) #10, -1
+  json_new$data_file <- metadata_split_path %>% #str_sub(21, -1) #10, -1
+    str_extract(pattern = "metadata/0000\\d+__\\d+-\\d\\d-\\d+T\\d+_\\d+_\\d+-Measurement_\\d/.*")
 
   json_new$output <- paste0("flatfield/",
                             str_extract(pattern = "0000\\d+__\\d+-\\d\\d-\\d+T\\d+_\\d+_\\d+-Measurement_\\d", string = metadata_split_path))
