@@ -19,7 +19,7 @@ generate_group <- function(plate_name, channel_n, path_base){
 # creating bash script
 c("#!/bin/sh",
   'pip install --user pandas', #ugly way of managing the dependency of the cellprofiler function
-paste0("python ~/dcp_helper/python/ManualMetadata_dir.py ~/bucket/metadata/",
+paste0("python ~/dcp_helper/python/ManualMetadata_dir.py ~/dcp_helper/metadata/",
        df$plate_name,
        "/ ",
        read_lines("group_template.txt"),
@@ -27,5 +27,9 @@ paste0("python ~/dcp_helper/python/ManualMetadata_dir.py ~/bucket/metadata/",
        df$channel_n)
 ) %>%
   write_lines(path)
+
+  #run system command to make it executable
+  system(paste0("chmod +x ", path))
+
   return(path)
 }

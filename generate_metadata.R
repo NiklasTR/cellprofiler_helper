@@ -30,41 +30,41 @@ new_path_base = paste0("~/dcp_helper/metadata/", plate_name,"/")
 inbox_path_base= paste0("~/bucket/inbox/", plate_name,"/Images/")
 flatfield_path_base= paste0("~/bucket/flatfield/", plate_name,"/")
 
-## Creating target dir
-lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
-
-tic()
-## Creating metadata directories
-print("creating pc metadata")
-for(j in 1:length(inbox_path_base)){
-  metadata_split_path <- create_flatfield_metadata_split(
-    path = inbox_path_base[j],
-    channel_of_interest = channel_v[1], #brightfield
-    name = "pc",
-    json_path = new_json_path, #not needed
-    path_base = new_path_base[j],
-    force = FALSE,
-    include_brightfield_proj = TRUE,
-    include_additional_proj = TRUE)
-}
-toc()
-
-tic()
-for(i in 2:length(channel_n)){
-  print(paste0("creating ", channel_n[i], " metadata"))
-  for(j in 1:length(inbox_path_base)){
-    metadata_split_path <- create_flatfield_metadata_split(
-      path = inbox_path_base[j],
-      channel_of_interest = channel_v[i], #brightfield
-      name = channel_n[i],
-      json_path = new_json_path, #not needed
-      path_base = new_path_base[j],
-      force = FALSE)
-  }
-}
-toc()
-
-################ Grouping data
+# ## Creating target dir
+# lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
+#
+# tic()
+# ## Creating metadata directories
+# print("creating pc metadata")
+# for(j in 1:length(inbox_path_base)){
+#   metadata_split_path <- create_flatfield_metadata_split(
+#     path = inbox_path_base[j],
+#     channel_of_interest = channel_v[1], #brightfield
+#     name = "pc",
+#     json_path = new_json_path, #not needed
+#     path_base = new_path_base[j],
+#     force = FALSE,
+#     include_brightfield_proj = TRUE,
+#     include_additional_proj = TRUE)
+# }
+# toc()
+#
+# tic()
+# for(i in 2:length(channel_n)){
+#   print(paste0("creating ", channel_n[i], " metadata"))
+#   for(j in 1:length(inbox_path_base)){
+#     metadata_split_path <- create_flatfield_metadata_split(
+#       path = inbox_path_base[j],
+#       channel_of_interest = channel_v[i], #brightfield
+#       name = channel_n[i],
+#       json_path = new_json_path, #not needed
+#       path_base = new_path_base[j],
+#       force = FALSE)
+#   }
+# }
+# toc()
+#
+# ################ Grouping data
 
 tic()
 print("Creating shell script for grouping")

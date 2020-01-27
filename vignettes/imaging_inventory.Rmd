@@ -41,7 +41,7 @@ inbox %>%
   full_join(cclf_imaging) %>%
   filter(!imaging_status %in% c("failed", "test")) %>% 
   filter(perturbation == TRUE) %>% 
-  select(start_date, barcode, flatfield) %>% distinct()
+  select(start_date, barcode, flatfield, inbox)
 ```
 
 ```{r}
