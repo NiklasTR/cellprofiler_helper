@@ -15,6 +15,7 @@ generate_group <- function(plate_name, channel_n, path_base){
     magrittr::set_colnames(c("plate_name", "channel_n"))
 
   path = paste0(path_base, plate_name[1], "_create_group.sh")
+  fileConn<-file(path)
 
 # creating bash script
 c("#!/bin/sh",
@@ -26,7 +27,9 @@ paste0("python ~/dcp_helper/python/ManualMetadata_dir.py ~/dcp_helper/metadata/"
        " ",
        df$channel_n)
 ) %>%
-  write_lines(path)
+  write_lines(fileConn)
+
+  close(fileConn)
 
   #run system command to make it executable
   system(paste0("chmod +x ", path))

@@ -1,7 +1,7 @@
 {
   "_comment1": "Paths in this file are relative to the root of your S3 bucket",
   "pipeline": "rapid/cellprofiler/pipelines/bf_root_tpwell_g135.cppipe",
-  "data_file": "per/metadata/000012094903__2019-08-27T21_12_28-Measurement_1//metadata_000012094903__2019-08-27T21_12_28-Measurement_1_bf_E14.csv",
+  "data_file": "dcp_helper/metadata/000012094903__2019-08-27T21_12_28-Measurement_1//metadata_000012094903__2019-08-27T21_12_28-Measurement_1_bf_E14.csv",
   "input": "blank",
   "output": "flatfield/000012094903__2019-08-27T21_12_28-Measurement_1",
   "output_structure": "Metadata_parent-Metadata_timepoint-Metadata_well-Metadata_fld-Metadata_channel",
