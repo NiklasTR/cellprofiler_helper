@@ -30,11 +30,11 @@ new_path_base = paste0("~/dcp_helper/metadata/", plate_name,"/")
 inbox_path_base= paste0("~/bucket/inbox/", plate_name,"/Images/")
 flatfield_path_base= paste0("~/bucket/flatfield/", plate_name,"/")
 
-# ## Creating target dir
-# lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
-#
-# tic()
-# ## Creating metadata directories
+## Creating target dir
+lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
+
+tic()
+## Creating metadata directories
 # print("creating pc metadata")
 # for(j in 1:length(inbox_path_base)){
 #   metadata_split_path <- create_flatfield_metadata_split(
@@ -63,19 +63,21 @@ flatfield_path_base= paste0("~/bucket/flatfield/", plate_name,"/")
 #   }
 # }
 # toc()
-#
-# ################ Grouping data
+
+################ Grouping data
 
 tic()
 print("Creating shell script for grouping")
-path <- generate_group(plate_name, channel_n, new_path_base)
-toc()
+path <- c()
+for(i in 1:length(plate_name)){
+path <- generate_group(plate_name[i], channel_n, new_path_base)
+
 
 print(path)
 
-tic()
 print("Grouping data using python script")
 system(path)
+}
 toc()
 
 ################ Aggregating information and executable file
