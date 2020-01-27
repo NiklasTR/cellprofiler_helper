@@ -34,35 +34,35 @@ flatfield_path_base= paste0("~/bucket/flatfield/", plate_name,"/")
 lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
 
 tic()
-## Creating metadata directories
-# print("creating pc metadata")
-# for(j in 1:length(inbox_path_base)){
-#   metadata_split_path <- create_flatfield_metadata_split(
-#     path = inbox_path_base[j],
-#     channel_of_interest = channel_v[1], #brightfield
-#     name = "pc",
-#     json_path = new_json_path, #not needed
-#     path_base = new_path_base[j],
-#     force = FALSE,
-#     include_brightfield_proj = TRUE,
-#     include_additional_proj = TRUE)
-# }
-# toc()
-#
-# tic()
-# for(i in 2:length(channel_n)){
-#   print(paste0("creating ", channel_n[i], " metadata"))
-#   for(j in 1:length(inbox_path_base)){
-#     metadata_split_path <- create_flatfield_metadata_split(
-#       path = inbox_path_base[j],
-#       channel_of_interest = channel_v[i], #brightfield
-#       name = channel_n[i],
-#       json_path = new_json_path, #not needed
-#       path_base = new_path_base[j],
-#       force = FALSE)
-#   }
-# }
-# toc()
+#### Creating metadata directories
+print("creating pc metadata")
+for(j in 1:length(inbox_path_base)){
+  metadata_split_path <- create_flatfield_metadata_split(
+    path = inbox_path_base[j],
+    channel_of_interest = channel_v[1], #brightfield
+    name = "pc",
+    json_path = new_json_path, #not needed
+    path_base = new_path_base[j],
+    force = FALSE,
+    include_brightfield_proj = TRUE,
+    include_additional_proj = TRUE)
+}
+toc()
+
+tic()
+for(i in 2:length(channel_n)){
+  print(paste0("creating ", channel_n[i], " metadata"))
+  for(j in 1:length(inbox_path_base)){
+    metadata_split_path <- create_flatfield_metadata_split(
+      path = inbox_path_base[j],
+      channel_of_interest = channel_v[i], #brightfield
+      name = channel_n[i],
+      json_path = new_json_path, #not needed
+      path_base = new_path_base[j],
+      force = FALSE)
+  }
+}
+toc()
 
 ################ Grouping data
 
@@ -70,7 +70,7 @@ tic()
 print("Creating shell script for grouping")
 path <- c()
 for(i in 1:length(plate_name)){
-path <- generate_group(plate_name[i], channel_n, new_path_base)
+path <- generate_group(plate_name[i], channel_n, new_path_base[i])
 
 
 print(path)

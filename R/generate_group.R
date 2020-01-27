@@ -14,8 +14,8 @@ generate_group <- function(plate_name, channel_n, path_base){
     as_tibble() %>%
     magrittr::set_colnames(c("plate_name", "channel_n"))
 
-  path = paste0(path_base, plate_name[1], "_create_group.sh")
-  fileConn<-file(path)
+  path = paste0(path_base, plate_name, "_create_group.sh")
+  fileConn<-file(path, "w")
 
 # creating bash script
 c("#!/bin/sh",
