@@ -5,7 +5,7 @@
 # first arg: barcode regex
 # second arg: 'ascstore'
 
-for x in `awk '/flatfield\\/000012049003.*csv$/' glacier-restore.txt`
+for x in `awk '/rapid\\/cellprofiler*/' glacier-restore.txt`
   do
     echo "Begin restoring $x"
     aws s3api restore-object --restore-request '{"Days":25,"GlacierJobParameters":{"Tier":"Bulk"}}' --bucket ascstore --key "$x"

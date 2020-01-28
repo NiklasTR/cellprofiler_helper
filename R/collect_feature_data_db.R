@@ -25,7 +25,7 @@ collect_feature_data_db <- function(path_data,
                        dbname = "biosensor",
                        port = 5432,
                        user = "biosensor",
-                       password = readLines("~/password.txt"))
+                       password = "biosensor")
   print("listing files")
   files <- list.files(path_data, pattern = channel_of_interest, full.names = TRUE) %>% paste0(., "/", measurment_of_interest)
   # I want to avoid saving data that is redundant. Therefore I want to remove every entry from the list of files, that has a matching id in the database
