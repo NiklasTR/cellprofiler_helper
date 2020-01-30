@@ -1,4 +1,4 @@
-#' Dump a dataframe into a database
+#' DEPRECATED Dump a dataframe into a database
 #'
 #' @param path_data
 #' @param channel_of_interest

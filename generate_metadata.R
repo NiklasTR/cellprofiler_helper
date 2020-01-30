@@ -26,9 +26,9 @@ library(dcphelper)
 library(tictoc)
 
 ## Define paths
-new_path_base = paste0("~/dcp_helper/metadata/", plate_name,"/")
-inbox_path_base= paste0("~/bucket/inbox/", plate_name,"/Images/")
-flatfield_path_base= paste0("~/bucket/flatfield/", plate_name,"/")
+new_path_base = paste0("~/dcp_helper/metadata/", plate_name,"/") #relative path acceptable
+inbox_path_base= paste0("/home/ubuntu/bucket/inbox/", plate_name,"/Images/") #absolute path with /home/ubuntu/ required
+flatfield_path_base= paste0("~/bucket/flatfield/", plate_name,"/") #deprecated: only used for result collection
 
 ## Creating target dir
 lapply(new_path_base, dir.create) # Do not execute this from a local machine if you expect other AWS services to access the directory later on
