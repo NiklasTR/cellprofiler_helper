@@ -17,6 +17,7 @@
 collect_feature_data_db <- function(path_data,
                                     host_db = "biosensor.c9k2hfiwt5mi.us-east-2.rds.amazonaws.com",
                                     result_path = "~/dcp_helper/data/results/",
+
                                     channel_of_interest = "ch1",
                                     measurment_of_interest = "measurment_IdentifySecondaryObjects.csv"){
   ## This function should not be run in parallel

@@ -10,13 +10,11 @@
 #' @import janitor
 #'
 #' @examples
+<<<<<<< HEAD
 collect_feature_data <- function(path_data,
                                  channel_of_interest = "ch1",
                                  result_path = "~/dcp_helper/data/results/",
                                  measurment_of_interest = "measurment_IdentifySecondaryObjects.csv"){
-  #path_data <- "~/bucket/flatfield/000012070903__2019-01-10T20_04_27-Measurement_3/"
-  #channel_of_interest = "ch1"
-  #measurment_of_interest = "measurment_IdentifySecondaryObjects.csv"
 
   barcode <- path_data %>% str_extract(pattern = "0000\\d+__\\d+-\\d\\d-\\d+T\\d+_\\d+_\\d+-Measurement_\\d")
 
@@ -26,11 +24,12 @@ collect_feature_data <- function(path_data,
   print("collecting data and writing feather object")
   processed_wells <- tibble(full_path = files,
                             barcode = barcode) %>%
-    head(100) %>%
+    #head(100) %>%
     mutate(data = furrr::future_map(full_path, ~ .x %>% read_csv %>% janitor::clean_names())) %>%
     unnest() %>%
     feather::write_feather(paste0(result_path, barcode, "_feather"))
 
   return(processed_wells)
+
 }
 

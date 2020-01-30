@@ -1,0 +1,4 @@
+{"Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk1,Metadata_well=K01,Metadata_fld=f01,Metadata_channel=ch1"}, 
+{"Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk2,Metadata_well=K01,Metadata_fld=f01,Metadata_channel=ch1"}, 
+{"Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk1,Metadata_well=K01,Metadata_fld=f02,Metadata_channel=ch1"}, 
+{"Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk2,Metadata_well=K01,Metadata_fld=f02,Metadata_channel=ch1"}, 

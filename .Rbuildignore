@@ -1,5 +1,8 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^metadata$
+<<<<<<< HEAD
 ^data$
 
+=======
+>>>>>>> 43bba39e1b6a0920d1a56141d5034b404d603cc6

@@ -129,8 +129,5 @@ for(j in new_path_base){
 }
 toc()
 
-# collecting features after processing
-#for(i in flatfield_path_base){
-#  print(paste0("collecting data ", i))
-#  collect_feature_data_db(i)
-#}
+### Pushing metadata to S3 bucket
+system("./sync_metadata_to_bucket.sh")

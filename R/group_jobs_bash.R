@@ -16,8 +16,12 @@ group_jobs_bash <- function(path_base,
                             number_col_interval,
                             python_call = "python ~/Distributed-CellProfiler/run.py submitJob "){
   # naming bash file
+<<<<<<< HEAD
   # bash_file <- paste0(path_base, "/", "quick_group_jobs_bash_", name, "_", (Sys.Date()), ".sh")
   bash_file <- paste0(path_base, "/", "quick_group_jobs_bash_", name, "_", ".sh")
+=======
+  bash_file <- paste0(path_base, "/", "quick_group_jobs_bash_", name, "_", (Sys.Date()), ".sh")
+>>>>>>> 43bba39e1b6a0920d1a56141d5034b404d603cc6
   # opening bash file connection
   fileConn<-file(bash_file)
 

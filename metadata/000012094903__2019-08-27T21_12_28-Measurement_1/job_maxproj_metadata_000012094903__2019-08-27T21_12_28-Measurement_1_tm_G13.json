@@ -1,0 +1,41 @@
+{
+  "_comment1": "Paths in this file are relative to the root of your S3 bucket",
+  "pipeline": "rapid/cellprofiler/pipelines/maxproj_root.cppipe",
+  "data_file": "dcp_helper/metadata/000012094903__2019-08-27T21_12_28-Measurement_1//metadata_000012094903__2019-08-27T21_12_28-Measurement_1_tm_G13.csv",
+  "input": "blank",
+  "output": "flatfield/000012094903__2019-08-27T21_12_28-Measurement_1",
+  "output_structure": "Metadata_parent-Metadata_timepoint-Metadata_well-Metadata_fld-Metadata_channel",
+  "_comment2": "The following groups are tasks, and each will be run in parallel",
+  "groups": [
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk1,Metadata_well=G13,Metadata_fld=f01,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk2,Metadata_well=G13,Metadata_fld=f01,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk1,Metadata_well=G13,Metadata_fld=f02,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk2,Metadata_well=G13,Metadata_fld=f02,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk1,Metadata_well=G13,Metadata_fld=f03,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk2,Metadata_well=G13,Metadata_fld=f03,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk1,Metadata_well=G13,Metadata_fld=f04,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk2,Metadata_well=G13,Metadata_fld=f04,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk1,Metadata_well=G13,Metadata_fld=f05,Metadata_channel=ch4"
+    },
+    {
+      "Metadata": "Metadata_parent=000012094903__2019-08-27T21_12_28-Measurement_1,Metadata_timepoint=sk2,Metadata_well=G13,Metadata_fld=f05,Metadata_channel=ch4"
+    }
+  ]
+}
