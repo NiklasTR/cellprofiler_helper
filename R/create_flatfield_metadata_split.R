@@ -35,13 +35,12 @@ create_flatfield_metadata_split <- function(path = paste0(getwd(), "/"),
 
   if(include_brightfield_proj == TRUE){
     file_ff <- add_brightfield_proj(file_ff)
+    print("adding brightfield metadata")
   }
   # uncoupled the two if statements
   if(include_additional_proj == TRUE){
       file_ff <- add_flourescent_proj(file_ff)
-    }
-
-    print("adding additional metadata")
+      print("adding additional metadata")
   }
 
   metadata_split_path <- write_metadata_split(file_ff, name = name, path_base = path_base)
