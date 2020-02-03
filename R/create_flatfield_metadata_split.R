@@ -33,7 +33,7 @@ create_flatfield_metadata_split <- function(path = paste0(getwd(), "/"),
   print("formatting data")
   file_ff <- file_f %>% reformat_filelist()
 
-  if(include_brightfield_proj == TRUE){
+  if(include_brightfield_proj == TRUE | include_additional_proj == TRUE){
     file_ff <- add_brightfield_proj(file_ff)
     print("adding brightfield metadata")
   }
@@ -41,6 +41,11 @@ create_flatfield_metadata_split <- function(path = paste0(getwd(), "/"),
   if(include_additional_proj == TRUE){
       file_ff <- add_flourescent_proj(file_ff)
       print("adding additional metadata")
+  }
+  # hacky way of removing brightfield information - this is necessary as flourescent proj depends on code in brightfield proj.
+  if(include_additional_proj == TRUE & include_brightfield_proj == FALSE){
+    file_ff <- file_ff %>% dplyr::select(-contains("projection"))
+    print("removing brightfield metadata")
   }
 
   metadata_split_path <- write_metadata_split(file_ff, name = name, path_base = path_base)
