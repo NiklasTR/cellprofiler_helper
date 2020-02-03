@@ -35,7 +35,9 @@ create_flatfield_metadata_split <- function(path = paste0(getwd(), "/"),
 
   if(include_brightfield_proj == TRUE){
     file_ff <- add_brightfield_proj(file_ff)
-    if(include_additional_proj == TRUE){
+  }
+  # uncoupled the two if statements
+  if(include_additional_proj == TRUE){
       file_ff <- add_flourescent_proj(file_ff)
     }
 

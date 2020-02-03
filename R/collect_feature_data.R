@@ -10,7 +10,6 @@
 #' @import janitor
 #'
 #' @examples
-<<<<<<< HEAD
 collect_feature_data <- function(path_data,
                                  channel_of_interest = "ch1",
                                  result_path = "~/dcp_helper/data/results/",
