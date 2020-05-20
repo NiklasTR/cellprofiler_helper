@@ -70,13 +70,13 @@ tic()
 print("Creating shell script for grouping")
 path <- c()
 for(i in 1:length(plate_name)){
-path <- generate_group(plate_name[i], channel_n, new_path_base[i])
+  print(plate_name[i])
+  print(channel_n)
+  path <- generate_group(plate_name[i], channel_n)
+  print(path)
 
-
-print(path)
-
-print("Grouping data using python script")
-system(path)
+  print("Grouping data using python script")
+  system(path)
 }
 toc()
 

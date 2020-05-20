@@ -10,7 +10,7 @@ print(paste0("Processing plate ", plate_name))
 # sync files from S3 bucket for enhanced speed
 print("Syncing result files to local directory, make sure you have sufficient disk space & your data is not in glacier. \n
       Glacier data can be recovered using the tools in the 'glacier_helper' directory.")
-system('./sync_data_from_bucket')
+#system('./sync_data_from_bucket')
 
 # crawl local directory
 for(i in plate_name){
