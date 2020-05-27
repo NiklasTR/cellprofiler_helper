@@ -44,7 +44,7 @@ for(j in 1:length(inbox_path_base)){
     json_path = new_json_path, #not needed
     path_base = new_path_base[j],
     force = FALSE,
-    include_brightfield_proj = FALSE, # setting this value to FALSE will skip brightfield image analysis
+    include_brightfield_proj = TRUE, # setting this value to FALSE will skip brightfield image analysis
     include_additional_proj = TRUE)
 }
 toc()
