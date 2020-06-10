@@ -1,7 +1,7 @@
 #' Return tibble describing each image file with well, field etc. in a given directory
 #'
-#' @param path the path of the directry to screen. The path is not checked recursively
-#' @return a tibble with columns: file_name, n_zst, well:zst, l_row, channel, file_path, parent
+#' @param path the path of the directory to screen. The path is not checked recursively
+#' @return a tibble with columns: file_name, n_zst, well, col, fld, zst, l_row, channel, file_path, name, ext, parent, timepoint
 #' @export
 #'
 #' @examples
