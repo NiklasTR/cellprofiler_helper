@@ -21,6 +21,7 @@ create_flatfield_metadata_split <- function(path = paste0(getwd(), "/"),
                                       include_additional_proj = FALSE){
   file <- extract_filelist(path, force, path_base)
 
+  number_of_planes = max(file %>% select(channel, n_zst) %>% filter(channel == "ch2") %>% .$n_zst)
 
   #filtering the channel of interest
   print("filtering channel")
@@ -34,7 +35,7 @@ create_flatfield_metadata_split <- function(path = paste0(getwd(), "/"),
   file_ff <- file_f %>% reformat_filelist()
 
   if(include_brightfield_proj == TRUE | include_additional_proj == TRUE){
-    file_ff <- add_brightfield_proj(file_ff)
+    file_ff <- add_brightfield_proj(file_ff, p=sprintf('p%02d', number_of_planes))
     print("adding brightfield metadata")
   }
   # uncoupled the two if statements
